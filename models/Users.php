@@ -17,10 +17,18 @@ use Yii;
  */
 class Users extends User
 {
+    public $user_id;
+
     /** STATUSES */
     const STATUS_USER = 1;
     const STATUS_ADMIN = 2;
     const STATUS_BANNED = 3;
+
+    const STATUSES = [
+        self::STATUS_USER => 'Пользователь',
+        self::STATUS_ADMIN => 'Администратор',
+        self::STATUS_BANNED => 'Заблокированный'
+    ];
 
     public function rules()
     {
@@ -30,7 +38,7 @@ class Users extends User
             [['password'], 'string', 'max' => 65],
             [['email'], 'string', 'max' => 255],
 
-            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+//            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -59,5 +67,23 @@ class Users extends User
     public static function find()
     {
         return new UsersQuery(get_called_class());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatuses(): array
+    {
+        return self::STATUSES;
+    }
+
+    /**
+     * @param int $status
+     *
+     * @return string
+     */
+    public static function getStatus (int $status): string
+    {
+        return self::STATUSES[$status] ?? '';
     }
 }

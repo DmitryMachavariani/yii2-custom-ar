@@ -82,6 +82,20 @@ $this->title = "Задача: {$model->title}";
         <!-- /.row -->
     <?php endif; ?>
 
+    <?php if (!empty($model->attachments)): ?>
+        <div class="row">
+            <h3>Файлы:</h3>
+            <ul class="">
+                <?php foreach ($model->attachments as $file): ?>
+                    <li class="time-label">
+                        <?= date('Y-m-d', strtotime($file->date_updated)) ?> <a target="_blank" href="<?=$file->getFileUrl()?>"><?=$file->name?></a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <!-- /.row -->
+    <?php endif; ?>
+
     <!-- this row will not appear when printing -->
     <div class="row no-print">
         <div class="col-xs-12">

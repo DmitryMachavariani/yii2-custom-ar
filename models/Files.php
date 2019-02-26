@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\FileHelper;
 use Yii;
 
 /**
@@ -14,6 +15,7 @@ use Yii;
  * @property string $date_created
  * @property string $date_updated
  * @property int $model_id
+ * @property Tasks $task
  */
 class Files extends \yii\db\ActiveRecord
 {
@@ -31,7 +33,7 @@ class Files extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'status', 'model_id'], 'integer'],
+            [['status', 'model_id'], 'integer'],
             [['date_created', 'date_updated'], 'safe'],
             [['model_name', 'name'], 'string', 'max' => 255],
         ];
@@ -60,4 +62,51 @@ class Files extends \yii\db\ActiveRecord
     {
         return new FilesQuery(get_called_class());
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTask()
+    {
+        return $this->hasOne(Tasks::class, ['id' => 'model_id']);
+    }
+
+    /**
+     * @return Files
+     */
+    public static function createForTask()
+    {
+        $file = new self();
+        $file->model_name = 'Task';
+
+        return $file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelativeFilePath()
+    {
+        return $this->model_name . '/' . $this->task->id . '/';
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileUrl()
+    {
+        return Yii::$app->params['baseUrl'] . '/uploads/' . $this->getRelativeFilePath() . $this->name . '?v=' . rand(1, 99999);
+    }
+
+    public function afterDelete()
+    {
+        if ($this->name) {
+            $file = new FileHelper(\Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath());
+            $file->delete();
+        }
+
+        return parent::afterDelete();
+    }
+
+
 }

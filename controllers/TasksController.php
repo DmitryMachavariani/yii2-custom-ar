@@ -8,6 +8,7 @@ use app\models\Tasks;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 class TasksController extends BaseController
 {
@@ -52,6 +53,11 @@ class TasksController extends BaseController
         return $this->render('tasks', compact('dataProvider', 'projectId'));
     }
 
+    /**
+     * @param int|null $projectId
+     *
+     * @return string|\yii\web\Response
+     */
     public function actionCreate(int $projectId = null)
     {
         $model = new Tasks();
@@ -63,13 +69,15 @@ class TasksController extends BaseController
         $users = ArrayHelper::map($userModel, 'id', 'profile.fullName');
         $projects = ArrayHelper::map(Projects::find()->all(), 'id', 'title');
 
-        if (!is_null($projectId))
-        {
+        if (!is_null($projectId)) {
             $model->project_id = $projectId;
         }
 
-        if ($model->load(\Yii::$app->request->post()) && $model->save())
-        {
+        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            if ($model->files) {
+                $model->prepareFile();
+            }
             \Yii::$app->session->setFlash('success', 'Задача успешно заведена');
             return $this->refresh();
         }

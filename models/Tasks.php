@@ -2,10 +2,12 @@
 
 namespace app\models;
 
+use app\components\FileHelper;
 use app\models\notifications\Notification;
 use app\components\notification\NotifyFactory;
 use Yii;
 use yii\helpers\Html;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "tasks".
@@ -27,6 +29,7 @@ use yii\helpers\Html;
  * @property Users $assigned
  * @property Users $created
  * @property History[] $history
+ * @property Files[] $attachments
  */
 class Tasks extends \yii\db\ActiveRecord
 {
@@ -54,6 +57,11 @@ class Tasks extends \yii\db\ActiveRecord
         self::PRIORITY_HARD => 'Высокий'
     ];
 
+    /**
+     * @var UploadedFile[]
+     */
+    public $files;
+
     public static function tableName()
     {
         return 'tasks';
@@ -66,7 +74,7 @@ class Tasks extends \yii\db\ActiveRecord
             [['project_id', 'status', 'priority', 'assigned_to', 'assigned_to', 'notify'], 'integer'],
             [['description'], 'string'],
             [['estimate'], 'number'],
-            [['date_created', 'date_updated'], 'safe'],
+            [['date_created', 'date_updated', 'files'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Projects::class, 'targetAttribute' => ['project_id' => 'id']],
             [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['assigned_to' => 'id']],
@@ -89,6 +97,7 @@ class Tasks extends \yii\db\ActiveRecord
             'notify' => 'Уведомить',
             'date_created' => 'Дата создания',
             'date_updated' => 'Дата обновления',
+            'files' => 'Файлы',
         ];
     }
 
@@ -107,6 +116,15 @@ class Tasks extends \yii\db\ActiveRecord
     {
         return $this->hasMany(History::class, ['model_id' => 'id'])
             ->andOnCondition(['model_name' => 'Tasks']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAttachments()
+    {
+        return $this->hasMany(Files::class, ['model_id' => 'id'])
+            ->andOnCondition(['model_name' => 'Task']);
     }
 
     /**
@@ -251,5 +269,29 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @return bool
+     */
+    public function prepareFile()
+    {
+        if (!$this->files) {
+            return false;
+        }
+        foreach ($this->files as $uploadedFile) {
+            $filesModel = Files::createForTask();
+            $filesModel->name = $uploadedFile->getBaseName();
+            $filesModel->model_id = $this->id;
+            $filesModel->status = 1;
+            $filesModel->date_created = $filesModel->date_updated = date('Y-m-d H:i:s');
+            $filesModel->save();
+            $folder = Yii::getAlias('@uploads') . '/' . $filesModel->model_name . '/' . $this->id . '/';
+            $fileHelper = new FileHelper($uploadedFile->tempName, $folder);
+            $uploadedFile->name = $uploadedFile->getBaseName() . ($uploadedFile->getExtension() ? '.' . $uploadedFile->getExtension() : '');
+            $fileHelper->saveAs($folder . '/' . $uploadedFile->name);
+        }
+
+        return true;
     }
 }

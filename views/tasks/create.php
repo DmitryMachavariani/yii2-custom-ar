@@ -30,6 +30,7 @@ $this->title = 'Создать новую задачу';
 <?= $form->field($model, 'priority')->dropDownList(Tasks::PRIORITIES) ?>
 <?= $form->field($model, 'assigned_to')->dropDownList($users) ?>
 <?= $form->field($model, 'estimate') ?>
+<?= $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?>
 <?= $form->field($model, 'notify')->dropDownList($users, [
     'prompt' => 'Выбрать пользователя'
 ]) ?>

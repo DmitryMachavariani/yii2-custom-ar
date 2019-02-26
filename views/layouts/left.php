@@ -5,10 +5,11 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                <img src="<?= Yii::$app->user->identity->profile->avatar ?>" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
                 <p><?= Yii::$app->user->identity->username ?></p>
+                <?= Yii::$app->user->identity->profile->job ?>
             </div>
         </div>
 
@@ -28,7 +29,7 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
-                    ['label' => 'Пользователи', 'icon' => 'user', 'url' => ['users/index']],
+                    ['label' => 'Пользователи', 'icon' => 'user', 'url' => ['user/index']],
                     ['label' => 'Проекты', 'icon' => 'cogs', 'url' => ['projects/index']],
                     ['label' => 'Мои задачи', 'icon' => 'tasks', 'url' => ['tasks/my-tasks']],
                     ['label' => 'Выход', 'icon' => 'user-times', 'url' => ['site/logout']],

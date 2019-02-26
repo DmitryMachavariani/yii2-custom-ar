@@ -22,6 +22,7 @@ use Yii;
 class Profile extends \yii\db\ActiveRecord
 {
     public $fullName;
+    public $avatar;
 
     public static function tableName()
     {
@@ -36,8 +37,9 @@ class Profile extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'integer'],
             [['first_name', 'middle_name', 'last_name', 'job'], 'string', 'max' => 255],
-            [['photo'], 'string', 'max' => 32],
+
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['photo'], 'file', 'skipOnEmpty' => true, 'skipOnError' => true, 'extensions' => ['png', 'jpg']],
         ];
     }
 
@@ -48,12 +50,13 @@ class Profile extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'first_name' => 'First Name',
-            'middle_name' => 'Middle Name',
-            'last_name' => 'Last Name',
-            'photo' => 'Photo',
-            'job' => 'Job',
+            'user_id' => 'Пользователь',
+            'first_name' => 'Имя',
+            'middle_name' => 'Отчество',
+            'last_name' => 'Фамилия',
+            'photo' => 'Фото',
+            'job' => 'Должность',
+            'fullName' => 'ФИО'
         ];
     }
 
@@ -62,7 +65,7 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
@@ -77,6 +80,7 @@ class Profile extends \yii\db\ActiveRecord
     public function afterFind()
     {
         $this->fullName = $this->first_name . ' ' . $this->last_name;
+        $this->avatar = Yii::$app->request->baseUrl . '/uploads/' . $this->photo;
 
         parent::afterFind();
     }

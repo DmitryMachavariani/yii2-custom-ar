@@ -11,7 +11,7 @@ class m190219_103710_files_table extends Migration
     public function safeUp()
     {
         $this->createTable('files', [
-            'id' => $this->integer()->unsigned(),
+            'id' => $this->primaryKey()->unsigned(),
             'model_name' => $this->string(),
             'name' => $this->string(),
             'status' => $this->boolean()->unsigned(),

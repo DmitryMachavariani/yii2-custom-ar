@@ -22,7 +22,7 @@ use Yii;
 class Profile extends \yii\db\ActiveRecord
 {
     public $fullName;
-    public $avatar;
+//    public $avatar;
 
     public static function tableName()
     {
@@ -80,8 +80,25 @@ class Profile extends \yii\db\ActiveRecord
     public function afterFind()
     {
         $this->fullName = $this->first_name . ' ' . $this->last_name;
-        $this->avatar = Yii::$app->request->baseUrl . '/uploads/' . $this->photo;
+//        $this->avatar = Yii::$app->request->baseUrl . '/uploads/' . $this->photo;
 
         parent::afterFind();
+    }
+
+    public function getAvatar($width = null, $height = null)
+    {
+        if ($this->photo) {
+            return '/thumbs/' . Yii::$app->thumbnail->url(
+                    $this->photo,
+                    [
+                        'thumbnail' => [
+                            'width' => $width,
+                            'height' => $height,
+                        ]
+                    ]
+                );
+        }
+
+        return '/img/default-avatar.png';
     }
 }

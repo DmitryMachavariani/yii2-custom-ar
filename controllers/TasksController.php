@@ -6,6 +6,7 @@ use app\components\BaseController;
 use app\models\Files;
 use app\models\Projects;
 use app\models\Tasks;
+use app\models\TasksSearch;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -107,5 +108,13 @@ class TasksController extends BaseController
         $response->getHeaders()->set('Content-Type', "{$mimeType}; charset=utf-8");
 
         return \Yii::$app->response->sendFile($file->getFullPath());
+    }
+
+    public function actionSearch()
+    {
+        $projectId = null;
+        $dataProvider = TasksSearch::search(\Yii::$app->request->get('q', null));
+
+        return $this->render('tasks', compact('dataProvider', 'projectId'));
     }
 }

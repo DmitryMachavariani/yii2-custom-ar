@@ -20,7 +20,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "2amigos/yii2-ckeditor-widget": "^2.1",
-        "symfony/dependency-injection": "^4.2"
+        "symfony/dependency-injection": "^4.2",
+        "sadovojav/yii2-image-thumbnail": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
@@ -48,7 +49,8 @@
                     "runtime": "0777",
                     "web/assets": "0777",
                     "yii": "0755",
-                    "web/uploads": "0777"
+                    "web/uploads": "0777",
+                    "web/thumbs": "0777"
                 }
             ]
         },

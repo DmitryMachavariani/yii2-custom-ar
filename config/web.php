@@ -58,6 +58,12 @@ $config = [
                 ],
             ],
         ],
+        'thumbnail' => [
+            'class' => sadovojav\image\Thumbnail::class,
+            'cachePath' => '@thumbs',
+            'cacheExpire' => 3600,
+            'basePath' => '@uploads'
+        ],
     ],
     'params' => $params,
 ];

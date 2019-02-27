@@ -28,7 +28,7 @@ tests/*
 /mail/*
 /web/assets/*
 /web/uploads/*
-#/web/thumbs/*
+/web/thumbs/*
 
 yii.bat
 codeception.yml

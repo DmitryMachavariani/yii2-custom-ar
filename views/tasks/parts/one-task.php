@@ -2,6 +2,7 @@
 
 use app\models\Tasks;
 use app\models\History;
+use yii\helpers\Url;
 
 /**
  * @var $model \app\models\Tasks
@@ -17,9 +18,9 @@ $this->title = "Задача: {$model->title}";
         <div class="col-xs-12">
             <h2 class="page-header">
                 <i class="fa fa-globe"></i> <?= $model->title ?>
-                <button type="button" class="btn btn-primary" style="margin-right: 5px;">
+                <a href="<?= Url::to(['tasks/update', 'taskId' => $model->id]) ?>" type="button" class="btn btn-sm btn-primary" style="margin-right: 5px;">
                     <i class="fa fa-edit"></i>
-                </button>
+                </a>
                 <small class="pull-right">Дата создания: <?= date('Y-m-d', strtotime($model->date_created)) ?></small>
             </h2>
         </div>
@@ -72,10 +73,6 @@ $this->title = "Задача: {$model->title}";
                             <span class="time"><i class="fa fa-clock-o"></i> <?= date('G:i', strtotime($history->date)) ?></span>
 
                             <h3 class="timeline-header"><a href="#"><?= History::getType($history->type) ?></a></h3>
-
-                            <div class="timeline-body">
-                                <?= $history->comment ?>
-                            </div>
                         </div>
                     </li>
                     <!-- END timeline item -->
@@ -100,7 +97,7 @@ $this->title = "Задача: {$model->title}";
                 <!-- /.row -->
             <?php endif; ?>
             <div class="container">
-                <a href="/tasks/update?id=<?=$model->id?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
+                <a href="<?= Url::to(['tasks/update', 'taskId' => $model->id]) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
             </div>
         </div>
     </div>

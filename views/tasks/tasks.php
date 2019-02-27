@@ -33,6 +33,13 @@ $this->title = 'Задачи';
                 }
             ],
             [
+                'attribute' => 'project.title',
+                'format' => 'raw',
+                'value' => function (Tasks $task) {
+                    return Html::a($task->project->title, ['tasks/tasks', 'projectId' => $task->project_id]);
+                }
+            ],
+            [
                 'attribute' => 'status',
                 'value' => function (Tasks $task) {
                     return Tasks::getStatus($task->status);
@@ -51,7 +58,13 @@ $this->title = 'Задачи';
                     return $task->estimate . ' ч.';
                 }
             ],
-            'date_created'
+            [
+                'attribute' => 'date_created',
+                'format' => 'raw',
+                'value' => function (Tasks $task) {
+                    return date('Y-m-d', strtotime($task->date_created));
+                }
+            ],
         ]
     ]) ?>
     </div>

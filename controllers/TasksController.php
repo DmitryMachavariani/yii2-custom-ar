@@ -10,6 +10,7 @@ use app\models\TasksSearch;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -18,18 +19,30 @@ class TasksController extends BaseController
 {
     public $defaultAction = 'my-tasks';
 
+    /**
+     * @param int $taskId
+     *
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionTask(int $taskId)
     {
-        $dataProvider = new ActiveDataProvider([
-            'sort' => false,
-            'query' => Tasks::find()
-                ->alias('t')
-                ->withAllRelation()
-                ->where(['t.id' => $taskId])
-                ->orderBy(['h.id' => SORT_DESC])
-        ]);
+        $model = Tasks::find()
+            ->select(['t.*', 'h.id AS history_id'])
+            ->alias('t')
+            ->withAllRelation()
+            ->where(['t.id' => $taskId])
+            ->orderBy(['h.id' => SORT_ASC])
+            ->one();
 
-        return $this->render('task', compact('dataProvider'));
+        VarDumper::dump($model, 10, true);
+        die;
+
+        if (!$model) {
+            throw new NotFoundHttpException("Проект не найден");
+        }
+
+        return $this->render('parts/one-task', compact('model'));
     }
 
     public function actionMyTasks()
@@ -86,7 +99,35 @@ class TasksController extends BaseController
             return $this->refresh();
         }
 
-        return $this->render('create', compact('model', 'users', 'projects'));
+        return $this->render('form', compact('model', 'users', 'projects'));
+    }
+
+    /**
+     * @param int $taskId
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionUpdate(int $taskId)
+    {
+        $model = Tasks::find()->where(['id' => $taskId])->one();
+
+        $userModel = Users::find()
+            ->withProfile()
+            ->all();
+
+        $users = ArrayHelper::map($userModel, 'id', 'profile.fullName');
+        $projects = ArrayHelper::map(Projects::find()->all(), 'id', 'title');
+
+        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            if ($model->files) {
+                $model->prepareFile();
+            }
+            \Yii::$app->session->setFlash('success', 'Задача успешно обновлена');
+            return $this->redirect(['tasks/task', 'taskId' => $model->project_id]);
+        }
+
+        return $this->render('form', compact('model', 'users', 'projects'));
     }
 
     /**

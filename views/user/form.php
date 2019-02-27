@@ -31,6 +31,6 @@ use app\models\Users;
 
 <?= $form->field($model->profile, 'job') ?>
 
-<?= Html::submitButton('Создать', ['class' => 'btn btn-success']) ?>
+<?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', ['class' => 'btn btn-success']) ?>
 
 <?php ActiveForm::end() ?>

@@ -95,7 +95,7 @@ class Files extends \yii\db\ActiveRecord
      */
     public function getFileUrl()
     {
-        return Yii::$app->params['baseUrl'] . '/uploads/' . $this->getRelativeFilePath() . $this->name . '?v=' . rand(1, 99999);
+        return Yii::$app->request->baseUrl . '/uploads/' . $this->getRelativeFilePath() . $this->name . '?v=' . rand(1, 99999);
     }
 
     /**

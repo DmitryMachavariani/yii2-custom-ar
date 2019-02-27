@@ -29,6 +29,14 @@ class History extends \yii\db\ActiveRecord
         self::TYPE_ADD_FILE => 'Прикреплен файл',
     ];
 
+    /**
+     * Чтобы не хардкодить дописываем сюда
+     */
+    const MODEL_TASKS = 'Tasks';
+    const MODEL_PROFILE = 'Profile';
+    const MODEL_USERS = 'Users';
+    const MODEL_PROJECT = 'Project';
+
     public static function tableName()
     {
         return 'history';
@@ -121,5 +129,31 @@ class History extends \yii\db\ActiveRecord
         }
 
         return $class;
+    }
+
+    /**
+     * @param string $type
+     * @param string $modelName
+     * @param int    $modelId
+     *
+     * @return bool
+     */
+    public static function create(string $type, string $modelName, int $modelId)
+    {
+        $model = new History();
+        $model->model_name = $modelName;
+        $model->model_id = $modelId;
+        $model->type = $type;
+        $model->comment = History::TYPES[$type];
+
+        return $model->save();
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->author_id = Yii::$app->user->id;
+        $this->date = date('Y-m-d G:i:s');
+
+        return parent::beforeSave($insert);
     }
 }

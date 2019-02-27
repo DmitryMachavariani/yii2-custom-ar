@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\BaseController;
 use app\models\Projects;
 use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
 
 class ProjectsController extends BaseController
 {
@@ -33,6 +34,29 @@ class ProjectsController extends BaseController
             return $this->redirect(['projects/index']);
         }
 
-        return $this->render('create', compact('model'));
+        return $this->render('form', compact('model'));
+    }
+
+    /**
+     * @param int $projectId
+     *
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdate(int $projectId)
+    {
+        $model = Projects::find()->where(['id' => $projectId])->one();
+
+        if (!$model) {
+            throw new NotFoundHttpException("Проект не найден");
+        }
+
+        if ($model->load(\Yii::$app->request->post()) && $model->save())
+        {
+            \Yii::$app->session->setFlash('success', 'Проект успешно обновлен');
+            return $this->redirect(['projects/index']);
+        }
+
+        return $this->render('form', compact('model'));
     }
 }

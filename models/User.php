@@ -100,14 +100,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * @return Profile|array|null
-     */
-//    public function getProfile()
-//    {
-//        return Profile::find()->where(['user_id' => $this->getId()])->one();
-//    }
-
-    /**
      * Validates password
      *
      * @param string $password password to validate

@@ -4,7 +4,6 @@ namespace app\controllers;
 use app\components\BaseController;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
-use yii\helpers\VarDumper;
 use yii\web\UploadedFile;
 
 class UserController extends BaseController
@@ -19,8 +18,18 @@ class UserController extends BaseController
         return $this->render('index', compact('dataProvider'));
     }
 
-    public function actionUpdate(int $id)
+    /**
+     * @param int|null $id
+     *
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
+     */
+    public function actionUpdate(int $id = null)
     {
+        if ($id === null) {
+            $id = \Yii::$app->user->id;
+        }
+
         $model = Users::find()
             ->alias('u')
             ->where(['u.id' => $id])

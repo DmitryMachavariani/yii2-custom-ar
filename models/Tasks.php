@@ -285,11 +285,13 @@ class Tasks extends \yii\db\ActiveRecord
             $filesModel->status = 1;
             $filesModel->date_created = $filesModel->date_updated = date('Y-m-d H:i:s');
             $filesModel->save();
+
             $folder = mb_strtolower(Yii::getAlias('@uploads') . '/' . $filesModel->model_name . '/' . $this->id . '/');
             $fileHelper = new FileHelper($uploadedFile->tempName, $folder);
             $fileHelper->saveAs($folder . '/' . $filesModel->name);
         }
 
+        History::create(History::TYPE_ADD_FILE, History::MODEL_TASKS, $this->id);
         return true;
     }
 }

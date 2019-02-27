@@ -65,18 +65,4 @@ class SiteController extends BaseController
 
         return $this->goHome();
     }
-
-    public function actionTest()
-    {
-        $user = \app\models\Users::find()
-            ->alias('u')
-            ->joinWith('profile p')
-            ->where(['u.username' => 'admin'])
-            ->one();
-
-        \yii\helpers\VarDumper::dump($user, 10, true);
-
-
-        die;
-    }
 }

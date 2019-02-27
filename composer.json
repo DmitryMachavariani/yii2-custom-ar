@@ -14,14 +14,16 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.4.0",
-        "yiisoft/yii2": "~2.0.14",
+        "php": ">=7.0",
+        "yiisoft/yii2": "~2.0.16",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "2amigos/yii2-ckeditor-widget": "^2.1",
         "symfony/dependency-injection": "^4.2",
-        "sadovojav/yii2-image-thumbnail": "^1.0"
+        "sadovojav/yii2-image-thumbnail": "^1.0",
+        "yiisoft/yii2-redis": "^2.0",
+        "yiisoft/yii2-queue": "^2.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -24,9 +24,13 @@ class NotificationInside extends NotifyFactory
 
     /**
      * @param int $userId
+     *
+     * @return NotificationInside
      */
-    public function setUserId(int $userId): void
+    public function setUserId(int $userId)
     {
         $this->userId = $userId;
+
+        return $this;
     }
 }

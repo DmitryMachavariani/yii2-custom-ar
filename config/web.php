@@ -8,7 +8,7 @@ $config = [
     'language' => 'ru',
     'name' => 'Задачник',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'queue'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -63,6 +63,15 @@ $config = [
             'cachePath' => '@thumbs',
             'cacheExpire' => 3600,
             'basePath' => '@uploads'
+        ],
+        'redis' => [
+            'class' => \yii\redis\Connection::class,
+            'retries' => 1,
+        ],
+        'queue' => [
+            'class' => \yii\queue\redis\Queue::class,
+            'redis' => 'redis', // Redis connection component or its config
+            'channel' => 'queue', // Queue channel key
         ],
     ],
     'params' => $params,

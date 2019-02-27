@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\components\notification\NotifyFactory;
+use app\models\notifications\Notification;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Response;

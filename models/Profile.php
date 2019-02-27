@@ -39,7 +39,7 @@ class Profile extends \yii\db\ActiveRecord
             [['first_name', 'middle_name', 'last_name', 'job'], 'string', 'max' => 255],
 
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['photo'], 'file', 'skipOnEmpty' => true, 'skipOnError' => true, 'extensions' => ['png', 'jpg']],
+            [['photo'], 'file', 'skipOnEmpty' => true, 'skipOnError' => true, 'extensions' => ['png', 'jpg', 'jpeg']],
         ];
     }
 
@@ -85,7 +85,7 @@ class Profile extends \yii\db\ActiveRecord
         parent::afterFind();
     }
 
-    public function getAvatar($width = null, $height = null)
+    public function getAvatar($width = 160, $height = 160)
     {
         if ($this->photo) {
             return '/thumbs/' . Yii::$app->thumbnail->url(

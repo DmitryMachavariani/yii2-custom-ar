@@ -109,7 +109,7 @@ class Files extends \yii\db\ActiveRecord
     public function afterDelete()
     {
         if ($this->name) {
-            $file = new FileHelper(\Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath());
+            $file = new FileHelper(\Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath() . '/' . $this->name);
             $file->delete();
         }
 

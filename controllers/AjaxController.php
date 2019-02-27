@@ -3,10 +3,12 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\models\Files;
 use app\models\notifications\Notification;
 use app\models\Tasks;
 use app\models\Users;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 
@@ -89,5 +91,27 @@ class AjaxController extends BaseController
         }
 
         return $this->renderAjax('assigment', compact('users', 'taskId'));
+    }
+
+    public function actionRemoveFile($file)
+    {
+        try {
+            $fileModel = Files::findOne($file);
+            if (!$file) {
+                throw new NotFoundHttpException('Файл не найден');
+            }
+            if (!$fileModel->delete()) {
+                throw new \LogicException('Невозможно удалить файл');
+            }
+            return [
+                'status' => 1,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 0,
+                'message' => $e->getMessage()
+            ];
+        }
+
     }
 }

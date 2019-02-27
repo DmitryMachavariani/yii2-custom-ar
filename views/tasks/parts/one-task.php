@@ -17,6 +17,9 @@ $this->title = "Задача: {$model->title}";
         <div class="col-xs-12">
             <h2 class="page-header">
                 <i class="fa fa-globe"></i> <?= $model->title ?>
+                <button type="button" class="btn btn-primary" style="margin-right: 5px;">
+                    <i class="fa fa-edit"></i>
+                </button>
                 <small class="pull-right">Дата создания: <?= date('Y-m-d', strtotime($model->date_created)) ?></small>
             </h2>
         </div>
@@ -44,9 +47,9 @@ $this->title = "Задача: {$model->title}";
 
     <?php if (!empty($model->description)): ?>
         Описание
-        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+        <div class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
             <?= $model->description ?>
-        </p>
+        </div>
     <?php endif; ?>
 
     <?php if (!empty($model->history)): ?>
@@ -81,31 +84,24 @@ $this->title = "Задача: {$model->title}";
         </div>
         <!-- /.row -->
     <?php endif; ?>
-
-    <?php if (!empty($model->attachments)): ?>
+    <div class="container margin-bottom">
         <div class="row">
             <h3>Файлы:</h3>
-            <ul class="documents-list">
-                <?php foreach ($model->attachments as $file): ?>
-                    <li>
-                        <span class="glyphicon glyphicon-file"></span>
-                        <a target="_blank" href="<?=$file->getInternalFileUrl()?>"><?=$file->name?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-        <!-- /.row -->
-    <?php endif; ?>
-
-    <!-- this row will not appear when printing -->
-    <div class="row no-print">
-        <div class="col-xs-12">
-            <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
-            <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
-            </button>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-                <i class="fa fa-edit"></i> Изменить
-            </button>
+            <?php if (!empty($model->attachments)): ?>
+                    <ul class="documents-list">
+                        <?php foreach ($model->attachments as $file): ?>
+                            <li>
+                                <span class="glyphicon glyphicon-file"></span>
+                                <a target="_blank" href="<?=$file->getInternalFileUrl()?>"><?=$file->name?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
+                                <a href="/ajax/remove-file?file=<?=$file->id?>" class="js-remove-document"><span class="glyphicon glyphicon-remove"></span></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <!-- /.row -->
+            <?php endif; ?>
+            <div class="container">
+                <a href="/tasks/update?id=<?=$model->id?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
+            </div>
         </div>
     </div>
 </section>

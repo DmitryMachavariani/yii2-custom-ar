@@ -118,4 +118,18 @@ $(document).ready(function () {
         });
     });
 
+    $('.js-remove-document').click(function () {
+        var self = $(this);
+        $.post(
+            $(self).attr('href'),
+            function (data) {
+                if (data.status == 1) {
+                    $(self).parent().remove();
+                } else {
+                    alert(data.message);
+                }
+            }
+        );
+        return false;
+    });
 });

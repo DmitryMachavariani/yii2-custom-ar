@@ -85,10 +85,11 @@ $this->title = "Задача: {$model->title}";
     <?php if (!empty($model->attachments)): ?>
         <div class="row">
             <h3>Файлы:</h3>
-            <ul class="">
+            <ul class="documents-list">
                 <?php foreach ($model->attachments as $file): ?>
-                    <li class="time-label">
-                        <?= date('Y-m-d', strtotime($file->date_updated)) ?> <a target="_blank" href="<?=$file->getFileUrl()?>"><?=$file->name?></a>
+                    <li>
+                        <span class="glyphicon glyphicon-file"></span>
+                        <a target="_blank" href="<?=$file->getInternalFileUrl()?>"><?=$file->name?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
                     </li>
                 <?php endforeach; ?>
             </ul>

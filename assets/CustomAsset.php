@@ -20,6 +20,7 @@ class CustomAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'css/rewrite-theme.css'
     ];
     public $js = [
         'js/custom.js'

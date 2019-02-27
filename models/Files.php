@@ -87,7 +87,7 @@ class Files extends \yii\db\ActiveRecord
      */
     public function getRelativeFilePath()
     {
-        return $this->model_name . '/' . $this->task->id . '/';
+        return mb_strtolower($this->model_name . '/' . $this->model_id . '/');
     }
 
     /**
@@ -96,6 +96,14 @@ class Files extends \yii\db\ActiveRecord
     public function getFileUrl()
     {
         return Yii::$app->params['baseUrl'] . '/uploads/' . $this->getRelativeFilePath() . $this->name . '?v=' . rand(1, 99999);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalFileUrl()
+    {
+        return '/tasks/download?file_id=' . $this->id;
     }
 
     public function afterDelete()
@@ -108,5 +116,22 @@ class Files extends \yii\db\ActiveRecord
         return parent::afterDelete();
     }
 
+    /**
+     * @return mixed|string|null
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getMimeType()
+    {
+        $fHelper = new FileHelper($this->name, Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath());
 
+        return $fHelper->getMime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullPath()
+    {
+        return Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath() . $this->name;
+    }
 }

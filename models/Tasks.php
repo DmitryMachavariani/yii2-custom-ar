@@ -281,15 +281,14 @@ class Tasks extends \yii\db\ActiveRecord
         }
         foreach ($this->files as $uploadedFile) {
             $filesModel = Files::createForTask();
-            $filesModel->name = $uploadedFile->getBaseName();
+            $filesModel->name = $uploadedFile->getBaseName() . ($uploadedFile->getExtension() ? '.' . $uploadedFile->getExtension() : '');
             $filesModel->model_id = $this->id;
             $filesModel->status = 1;
             $filesModel->date_created = $filesModel->date_updated = date('Y-m-d H:i:s');
             $filesModel->save();
-            $folder = Yii::getAlias('@uploads') . '/' . $filesModel->model_name . '/' . $this->id . '/';
+            $folder = mb_strtolower(Yii::getAlias('@uploads') . '/' . $filesModel->model_name . '/' . $this->id . '/');
             $fileHelper = new FileHelper($uploadedFile->tempName, $folder);
-            $uploadedFile->name = $uploadedFile->getBaseName() . ($uploadedFile->getExtension() ? '.' . $uploadedFile->getExtension() : '');
-            $fileHelper->saveAs($folder . '/' . $uploadedFile->name);
+            $fileHelper->saveAs($folder . '/' . $filesModel->name);
         }
 
         return true;

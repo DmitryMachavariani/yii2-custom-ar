@@ -3,11 +3,14 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\models\Files;
 use app\models\Projects;
 use app\models\Tasks;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 class TasksController extends BaseController
@@ -83,5 +86,26 @@ class TasksController extends BaseController
         }
 
         return $this->render('create', compact('model', 'users', 'projects'));
+    }
+
+    /**
+     * @param $file_id
+     *
+     * @return \yii\console\Response|Response
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionDownload($file_id)
+    {
+        $file = Files::findOne($file_id);
+        if (!$file) {
+            throw new NotFoundHttpException('Файл не найден');
+        }
+        $mimeType = $file->getMimeType();
+        $response = \Yii::$app->response;
+        $response->format = Response::FORMAT_RAW;
+        $response->getHeaders()->set('Content-Type', "{$mimeType}; charset=utf-8");
+
+        return \Yii::$app->response->sendFile($file->getFullPath());
     }
 }

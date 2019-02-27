@@ -1,0 +1,7 @@
+ul.documents-list {
+    list-style: none;
+}
+
+ul.documents-list li {
+    padding: 5px 0;
+}

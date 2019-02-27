@@ -2,6 +2,8 @@
 
 namespace app\components;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Class FileHelper.
  *
@@ -130,7 +132,7 @@ class FileHelper extends \yii\helpers\FileHelper
      */
     public function getJustFilename($filename = null)
     {
-        return $this->getBaseName($filename) . '.' . $this->getExtension($filename);
+        return $this->getBaseName($filename) . ($this->getExtension($filename) ? '.' . $this->getExtension($filename) : '');
     }
 
     /**
@@ -235,5 +237,19 @@ class FileHelper extends \yii\helpers\FileHelper
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * @param null   $magicFile
+     * @param bool   $checkExtension
+     *
+     * @return mixed|string|null
+     * @throws InvalidConfigException
+     */
+    public function getMime($magicFile = null, $checkExtension = false)
+    {
+        $file = $this->getFilePath() . '/' . $this->getJustFilename();
+
+        return parent::getMimeType($file, $magicFile, $checkExtension);
     }
 }

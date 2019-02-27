@@ -9,8 +9,8 @@ use app\models\Tasks;
 use app\models\TasksSearch;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -31,12 +31,11 @@ class TasksController extends BaseController
             ->select(['t.*', 'h.id AS history_id'])
             ->alias('t')
             ->withAllRelation()
+            ->joinWith(['history h' => function (ActiveQuery $query) {
+                return $query->orderBy(['h.id' => SORT_DESC]);
+            }])
             ->where(['t.id' => $taskId])
-            ->orderBy(['h.id' => SORT_ASC])
             ->one();
-
-        VarDumper::dump($model, 10, true);
-        die;
 
         if (!$model) {
             throw new NotFoundHttpException("Проект не найден");

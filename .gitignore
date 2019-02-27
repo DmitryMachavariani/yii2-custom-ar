@@ -29,6 +29,7 @@ tests/*
 /web/assets/*
 /web/uploads/*
 /web/thumbs/*
+tools/ngrok/domain
 
 yii.bat
 codeception.yml

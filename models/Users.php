@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use app\components\Helper;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "users".
@@ -11,13 +13,16 @@ use Yii;
  * @property string $username
  * @property string $password
  * @property string $email
+ * @property string $phone
  * @property int $status
  *
  * @property Profile $profile
+ * @property Settings[] $settings
  */
 class Users extends User
 {
     public $user_id;
+    public $settingsModel;
 
     /** STATUSES */
     const STATUS_USER = 1;
@@ -36,7 +41,7 @@ class Users extends User
             [['status'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 65],
-            [['email'], 'string', 'max' => 255],
+            [['email', 'phone'], 'string', 'max' => 255],
 
 //            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -49,6 +54,7 @@ class Users extends User
             'username' => 'Логин',
             'password' => 'Пароль',
             'email' => 'Email',
+            'phone' => 'Телефон',
             'status' => 'Статус',
         ];
     }
@@ -59,6 +65,100 @@ class Users extends User
     public function getProfile()
     {
         return $this->hasOne(Profile::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSettings()
+    {
+        return $this->hasMany(Settings::class, ['user_id' => 'id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->phone = Helper::minimizePhone($this->phone);
+        return parent::beforeSave($insert);
+    }
+
+    public function afterFind()
+    {
+        $this->phone = Helper::maximizePhone($this->phone);
+        return parent::afterFind();
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @return bool
+     */
+    public function saveSetting($key, $value)
+    {
+        $setting = Settings::find()
+            ->andWhere([
+                'user_id' => $this->id,
+                'key' => $key
+            ])->one();
+
+        if (!$setting) {
+            $setting = new Settings([
+                'user_id' => $this->id,
+                'key' => $key,
+            ]);
+        }
+        $setting->value = (string)$value;
+
+        if (!$setting->save()) {
+            \Yii::$app->bot->log(var_export([
+                $setting->getErrors(),
+                $setting->getAttributes()
+            ], 1), 'test-errror');
+        }
+
+        return $setting->save();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTelegram()
+    {
+        return Settings::getValue($this->id, Settings::USE_TELEGRAM) && Settings::getValue($this->id, Settings::TELEGRAM_ID);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEmail()
+    {
+        return Settings::getValue($this->id, Settings::USE_EMAIL) && !empty($this->email);
+    }
+
+    /**
+     * @return false|string|null
+     */
+    public function getTelegramId()
+    {
+        return Settings::getValue($this->id, Settings::TELEGRAM_ID);
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotifications()
+    {
+        $settings = Settings::find()
+            ->select(['key', 'value'])
+            ->andWhere([
+                'user_id' => $this->id,
+                'key' => [
+                    Settings::USE_EMAIL,
+                    Settings::USE_TELEGRAM,
+                ]
+            ])->all();
+
+        return ArrayHelper::map($settings, 'key', 'value');
     }
 
     /**
@@ -85,5 +185,32 @@ class Users extends User
     public static function getStatus (int $status): string
     {
         return self::STATUSES[$status] ?? '';
+    }
+
+    /**
+     * @param $phone
+     *
+     * @return Users|array|null
+     */
+    public static function getByPhone($phone)
+    {
+        return self::find()
+            ->andWhere(['phone' => Helper::minimizePhone($phone)])
+            ->one();
+    }
+
+    /**
+     * @param $telegramId
+     *
+     * @return Users|array|null
+     */
+    public static function getByChatId($telegramId)
+    {
+        return self::find()
+            ->joinWith('settings')
+            ->andWhere([
+                Settings::tableName() . '.key' => Settings::TELEGRAM_ID,
+                Settings::tableName() . '.value' => $telegramId,
+            ])->one();
     }
 }

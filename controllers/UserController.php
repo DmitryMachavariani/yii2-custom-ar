@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\models\Settings;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\web\UploadedFile;
@@ -29,6 +30,7 @@ class UserController extends BaseController
         if ($id === null) {
             $id = \Yii::$app->user->id;
         }
+        $settingsModel = new Settings();
 
         $model = Users::find()
             ->alias('u')
@@ -45,8 +47,8 @@ class UserController extends BaseController
             if ($model->profile->validate()) {
                 if ($model->profile->photo) {
                     $name = \Yii::$app->security->generateRandomString(10);
-                    $fullName = $name . '.' . $model->profile->photo->extension;
-                    $path = \Yii::getAlias('@webroot/uploads/') . $fullName;
+                    $fullName = $name . '.' .$model->profile->photo->extension;
+                    $path = \Yii::getAlias('@uploads/') . $fullName;
 
                     $model->profile->photo->saveAs($path);
                     $model->profile->photo = $fullName;
@@ -54,12 +56,17 @@ class UserController extends BaseController
 
                 $model->profile->save();
             }
+            $settingsModel->user_id = $model->id;
+            if ($settingsModel->load(\Yii::$app->request->post())) {
+//                var_export($settingsModel->getAttributes()); die;
+                $settingsModel->saveData();
+            }
 
             \Yii::$app->session->setFlash('success', 'Пользователь успешно сохранен');
             return $this->redirect(['user/index']);
         }
 
 
-        return $this->render('form', compact('model'));
+        return $this->render('form', compact('model', 'settingsModel'));
     }
 }

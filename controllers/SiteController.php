@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\components\Bot\Curl;
 use app\components\notification\NotifyFactory;
 use app\models\notifications\Notification;
 use Yii;
@@ -13,6 +14,7 @@ use app\models\LoginForm;
 class SiteController extends BaseController
 {
     public $defaultAction = 'login';
+    public $enableCsrfValidation = false;
 
     public function behaviors()
     {
@@ -65,4 +67,41 @@ class SiteController extends BaseController
 
         return $this->goHome();
     }
+
+    public function actionSetHook()
+    {
+        $token = Yii::$app->bot->token;
+        $callback = Yii::$app->params['baseUrl'];
+        $url = "https://api.telegram.org/bot{$token}/setWebhook?url={$callback}site/bot";
+
+        $curl = new Curl();
+        $response = $curl->get($url);
+
+        var_export([
+            $url,
+            $response->getContent()
+        ]); die;
+    }
+
+    public function actionBot()
+    {
+        $this->enableCsrfValidation = false;
+        $input = file_get_contents('php://input');
+
+        $data = json_decode($input, 1);
+        Yii::$app->bot->run($data);
+    }
+
+    public function actionTest()
+    {
+        $notify = NotifyFactory::create(Notification::TYPE_MAIL)
+            ->setUserId(1)
+            ->setTaskId(18)
+            ->setMessage('Message12321sdfdsf');
+
+        Yii::$app->queue->push($notify);
+//        $notify->send();
+        die('ok');
+    }
+
 }

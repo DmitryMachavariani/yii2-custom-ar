@@ -5,11 +5,6 @@ use app\models\notifications\Notification;
 
 class NotificationInside extends NotifyFactory
 {
-    /**
-     * @var integer
-     */
-    protected $userId;
-
     public function send()
     {
         $model = new Notification();
@@ -20,17 +15,5 @@ class NotificationInside extends NotifyFactory
         $model->description = 'На вас заведена задача';
 
         $model->save();
-    }
-
-    /**
-     * @param int $userId
-     *
-     * @return NotificationInside
-     */
-    public function setUserId(int $userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
     }
 }

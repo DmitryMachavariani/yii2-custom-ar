@@ -23,7 +23,10 @@
         "symfony/dependency-injection": "^4.2",
         "sadovojav/yii2-image-thumbnail": "^1.0",
         "yiisoft/yii2-redis": "^2.0",
-        "yiisoft/yii2-queue": "^2.1"
+        "yiisoft/yii2-queue": "^2.1",
+        "botman/botman": "^2.4",
+        "botman/driver-telegram": "^1.5",
+        "doctrine/cache": "^1.8"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

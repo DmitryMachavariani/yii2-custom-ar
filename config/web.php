@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$bot = require __DIR__ . '/bot.php';
 
 $config = [
     'id' => 'basic',
@@ -14,12 +15,18 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'bot' => $bot,
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'dVbOD5w4mhT-2FQc_wo9-QHUnjPW5VmB',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => yii\redis\Cache::class,
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ]
         ],
         'user' => [
             'identityClass' => 'app\models\User',

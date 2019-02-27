@@ -208,4 +208,25 @@ class Helper
 
         return array_values($result);
     }
+
+    public static function minimizePhone($phone)
+    {
+        if (empty($phone)) {
+            return null;
+        }
+        $phone = preg_replace('/[^0-9]+/isu', '', $phone);
+        if (strpos($phone, '8') === 0) {
+            $phone = preg_replace('/^8/', '7', $phone);
+        }
+        return '+' . preg_replace('/[^0-9]+/isu', '', $phone);
+    }
+
+    public static function maximizePhone($phone)
+    {
+        $phone = self::minimizePhone($phone);
+        return preg_replace(
+            '/(\+\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/isu', "$1 ($2) $3-$4-$5",
+            $phone
+        );
+    }
 }

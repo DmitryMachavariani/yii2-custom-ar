@@ -276,18 +276,6 @@ class Tasks extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        if (!empty($this->notify)) {
-            $notify = NotifyFactory::create(Notification::TYPE_INSIDE)
-                ->setTaskId($this->id)
-                ->setUserId($this->assigned_to);
-            Yii::$app->queue->delay(10)->push($notify);
-        }
-
-        parent::afterSave($insert, $changedAttributes);
-    }
-
     public function afterFind()
     {
         $column = ArrayHelper::getColumn($this->trackers, 'time');

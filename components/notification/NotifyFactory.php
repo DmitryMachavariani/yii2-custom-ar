@@ -42,7 +42,7 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
                     $notifies[] = self::create(Notification::TYPE_TELEGRAM);
                     break;
                 case Settings::USE_EMAIL:
-                    $notifies = self::create(Notification::TYPE_MAIL);
+                    $notifies[] = self::create(Notification::TYPE_MAIL);
                     break;
                 default:
                     continue;

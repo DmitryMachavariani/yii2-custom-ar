@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\components\notification\NotifyFactory;
 use app\models\Files;
 use app\models\Projects;
 use app\models\Tasks;
@@ -94,6 +95,7 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
+            NotifyFactory::notifyUser($model->assigned_to, $model->id, 'Новая задача');
             \Yii::$app->session->setFlash('success', 'Задача успешно заведена');
             return $this->refresh();
         }
@@ -122,6 +124,7 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
+            NotifyFactory::notifyUser($model->assigned_to, $model->id, 'Задача обновлена');
             \Yii::$app->session->setFlash('success', 'Задача успешно обновлена');
             return $this->redirect(['tasks/task', 'taskId' => $model->project_id]);
         }

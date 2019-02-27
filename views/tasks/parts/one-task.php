@@ -38,6 +38,7 @@ $this->title = "Задача: {$model->title}";
         <div class="col-sm-4 invoice-col">
             Назначена <strong><?= $model->assigned->profile->fullName ?></strong>  <a href="#" class="fa fa-edit text-blue" data-id="<?= $model->id ?>" id="change-assigned"></a><br>
             Оценка трудозатрат <strong><?= $model->estimate ?></strong> ч.<br>
+            Трудозатрат <strong><?= $model->tracked ?></strong> ч.<br>
             Приоритет <strong><?= Tasks::getPriorityColored($model->priority) ?></strong><br>
         </div>
         <!-- /.col -->

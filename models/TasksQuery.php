@@ -12,7 +12,11 @@ class TasksQuery extends \yii\db\ActiveQuery
     public function withAllRelation()
     {
         return $this->joinWith([
-            'created c', 'assigned a', 'project p', 'history h'
+            'created c',
+            'assigned a',
+            'project p',
+            'history h',
+            'trackers tr'
         ]);
     }
 

@@ -7,6 +7,7 @@ use app\models\Files;
 use app\models\History;
 use app\models\notifications\Notification;
 use app\models\Tasks;
+use app\models\Trackers;
 use app\models\Users;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -99,6 +100,44 @@ class AjaxController extends BaseController
         return $this->renderAjax('assigment', compact('users', 'taskId'));
     }
 
+    public function actionTrack ()
+    {
+        $taskId = $this->post['taskId'] ?? '';
+        $action = $this->post['action'] ?? '';
+        $time = $this->post['time'] ?? '';
+        $comment = $this->post['comment'] ?? '';
+
+        $actions = Trackers::TYPES;
+
+        if (is_numeric($action)) {
+            $task = Tasks::find()->where(['id' => $taskId])->one();
+
+            if (!$task) {
+                return false;
+            }
+
+            $model = new Trackers();
+            $model->task_id = $taskId;
+            $model->action = $action;
+            $model->time = $time;
+            $model->comment = $comment;
+
+            if ($model->save()) {
+                return ["msg" => "Успех", "type" => "success"];
+            } else {
+                return ["msg" => "Возникла ошибка. Проверьте правильность заполнения данных", "type" => "fail"];
+            }
+        }
+
+        return $this->renderAjax('track', compact('taskId', 'actions'));
+    }
+
+    /**
+     * @param $file
+     *
+     * @return array
+     * @throws \Throwable
+     */
     public function actionRemoveFile($file)
     {
         try {
@@ -118,6 +157,5 @@ class AjaxController extends BaseController
                 'message' => $e->getMessage()
             ];
         }
-
     }
 }

@@ -3,6 +3,7 @@
 use app\components\CustomGridView;
 use app\models\Tasks;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  *
@@ -56,6 +57,15 @@ $this->title = 'Задачи';
                 'attribute' => 'estimate',
                 'value' => function (Tasks $task) {
                     return $task->estimate . ' ч.';
+                }
+            ],
+            [
+                'attribute' => 'tracked',
+                'format' => 'raw',
+                'value' => function (Tasks $task) {
+                    $span = Html::tag('span', null, ['class' => 'fa fa-clock-o']);
+                    $url = Url::to(['ajax/track']);
+                    return $task->tracked . ' ч. ' .  Html::a($span, '#', ['data-url' => $url, 'data-id' => $task->id]);
                 }
             ],
             [

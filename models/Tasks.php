@@ -6,6 +6,7 @@ use app\components\FileHelper;
 use app\models\notifications\Notification;
 use app\components\notification\NotifyFactory;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\UploadedFile;
 
@@ -30,6 +31,7 @@ use yii\web\UploadedFile;
  * @property Users $created
  * @property History[] $history
  * @property Files[] $attachments
+ * @property Trackers[] $trackers
  */
 class Tasks extends \yii\db\ActiveRecord
 {
@@ -62,6 +64,11 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public $files;
 
+    /**
+     * @var float
+     */
+    public $tracked;
+
     public static function tableName()
     {
         return 'tasks';
@@ -76,9 +83,11 @@ class Tasks extends \yii\db\ActiveRecord
             [['estimate'], 'number'],
             [['date_created', 'date_updated', 'files'], 'safe'],
             [['title'], 'string', 'max' => 255],
+
             [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Projects::class, 'targetAttribute' => ['project_id' => 'id']],
             [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['assigned_to' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['created_by' => 'id']],
+            [['trackers'], 'exist', 'skipOnError' => true, 'targetClass' => Trackers::class, 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -94,6 +103,7 @@ class Tasks extends \yii\db\ActiveRecord
             'assigned_to' => 'Назначена',
             'created_by' => 'Создана',
             'estimate' => 'Оценка',
+            'tracked' => 'Трудозатраты',
             'notify' => 'Уведомить',
             'date_created' => 'Дата создания',
             'date_updated' => 'Дата обновления',
@@ -141,6 +151,14 @@ class Tasks extends \yii\db\ActiveRecord
     public function getCreated()
     {
         return $this->hasOne(Users::class, ['id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrackers()
+    {
+        return $this->hasMany(Trackers::class, ['task_id' => 'id']);
     }
 
     /**
@@ -268,6 +286,14 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function afterFind()
+    {
+        $column = ArrayHelper::getColumn($this->trackers, 'time');
+        $this->tracked = array_sum($column);
+
+        parent::afterFind();
     }
 
     /**

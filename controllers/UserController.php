@@ -43,12 +43,15 @@ class UserController extends BaseController
             $model->profile->photo = UploadedFile::getInstance($model->profile, 'photo');
 
             if ($model->profile->validate()) {
-                $name = \Yii::$app->security->generateRandomString(10);
-                $fullName = $name . '.' .$model->profile->photo->extension;
-                $path = \Yii::getAlias('@webroot/uploads/') . $fullName;
+                if ($model->profile->photo) {
+                    $name = \Yii::$app->security->generateRandomString(10);
+                    $fullName = $name . '.' . $model->profile->photo->extension;
+                    $path = \Yii::getAlias('@webroot/uploads/') . $fullName;
 
-                $model->profile->photo->saveAs($path);
-                $model->profile->photo = $fullName;
+                    $model->profile->photo->saveAs($path);
+                    $model->profile->photo = $fullName;
+                }
+
                 $model->profile->save();
             }
 

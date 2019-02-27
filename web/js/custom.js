@@ -118,6 +118,27 @@ $(document).ready(function () {
         });
     });
 
+    /**
+     * клик по иконке трудозатрат
+     */
+    $('.fa-clock-o').click(function() {
+        var url = $(this).parent().attr('data-url');
+        var id = $(this).parent().attr('data-id');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'taskId': id
+            },
+            success: function (result) {
+                $('#save-changes-modal').attr('data-url', '/ajax/track');
+                $('#modalContent').html(result);
+                $('#modal-default').modal('show');
+            }
+        });
+    });
+
     $('.js-remove-document').click(function () {
         var self = $(this);
         $.post(

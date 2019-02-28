@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $bot = require __DIR__ . '/bot.php';
+$mailer = require __DIR__ . '/mailer.php';
 
 $config = [
     'id' => 'basic-console',
@@ -18,7 +19,6 @@ $config = [
         'bot' => $bot,
         'authManager' => [
             'class' => 'app\components\customDbManager',
-//            'class' => 'yii\rbac\DbManager',
         ],
         'cache' => [
             'class' => yii\redis\Cache::class,
@@ -36,13 +36,7 @@ $config = [
                 ],
             ],
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => USE_FILE_EMAIL_TRANSPORT,
-        ],
+        'mailer' => $mailer,
         'redis' => [
             'class' => \yii\redis\Connection::class,
             'retries' => 1,

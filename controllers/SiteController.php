@@ -97,10 +97,12 @@ class SiteController extends BaseController
         $notify = NotifyFactory::create(Notification::TYPE_MAIL)
             ->setUserId(1)
             ->setTaskId(18)
-            ->setMessage('Message12321sdfdsf');
+            ->setMessage('Test123213')
+            ->send();
 
-        Yii::$app->queue->push($notify);
+//        Yii::$app->queue->push($notify);
 //        $notify->send();
+        var_export($notify);
         die('ok');
     }
 

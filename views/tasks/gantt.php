@@ -3,12 +3,9 @@
  * @var $this \yii\web\View
  */
 
-use app\models\GanttForm;
-use yii\bootstrap\Html;
-
 \app\assets\GanttAsset::register($this);
 $this->title = 'Гант';
-$this->params['breadcrumbs'][] = ['label' => 'Диаграмма ганта', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Диаграмма ганта', 'url' => ['gantt']];
 ?>
 <div id="wrapper">
     <h2><?=$this->title?></h2>

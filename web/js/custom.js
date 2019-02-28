@@ -4,8 +4,24 @@ $(document).ready(function () {
      */
     $('#modal-default').on('hidden.bs.modal', function () {
         $(this).children(0).removeClass('modal-lg').removeClass('modal-sm').removeClass('modal-md').addClass('modal-md');
+        $('.modal-footer').show();
     });
 
+    function processTrackClick(url, taskId)
+    {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'taskId': taskId
+            },
+            success: function (result) {
+                $('#save-changes-modal').attr('data-url', '/ajax/track');
+                $('#modalContent').html(result);
+                $('#modal-default').modal('show');
+            }
+        });
+    }
 
     /**
      * Выводит alert бутстраповский
@@ -98,11 +114,7 @@ $(document).ready(function () {
             type: 'POST',
             url: '/ajax/notify-read',
             success: function (result) {
-                if (result.type == 'success') {
-                    showAlert(result.msg, 'info');
-                } else {
-                    showAlert(result.msg, 'danger');
-                }
+                showAlert(result.msg, result.type);
             }
         });
     });
@@ -159,11 +171,7 @@ $(document).ready(function () {
             data: $("#modalContent :input").serialize(),
             success: function (result) {
                 $('#modal-default').modal('hide');
-                if (result.type == 'success') {
-                    showAlert(result.msg, 'info');
-                } else {
-                    showAlert(result.msg, 'danger');
-                }
+                showAlert(result.msg, result.type);
             }
         });
     });
@@ -175,18 +183,7 @@ $(document).ready(function () {
         var url = $(this).parent().attr('data-url');
         var id = $(this).parent().attr('data-id');
 
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: {
-                'taskId': id
-            },
-            success: function (result) {
-                $('#save-changes-modal').attr('data-url', '/ajax/track');
-                $('#modalContent').html(result);
-                $('#modal-default').modal('show');
-            }
-        });
+        processTrackClick(url, id);
     });
 
     /**
@@ -221,10 +218,9 @@ $(document).ready(function () {
                 'taskId': id
             },
             success: function (result) {
-                $('#save-changes-modal').attr('data-url', '/ajax/tracks-delete');
                 $('#modalContent').html(result);
                 $('#modal-default').modal('show').children(0).removeClass('modal-md').addClass('modal-lg');
-
+                $('.modal-footer').hide();
                 /**
                  * клик по иконке удаления трудозатрат в модальном окне трудозатрат
                  */
@@ -232,10 +228,12 @@ $(document).ready(function () {
                     var url = $(this).attr('data-url');
 
                     $.ajax({
-                        // ВНИМАНИЕ GET, вместо POST
+                        /** ВНИМАНИЕ GET, вместо POST **/
                         type: 'GET',
                         url: url,
+                        context: $(this),
                         success: function (result) {
+                            $(this).parent().parent().hide();
                             showAlertInModal(result.msg, result.type);
                         }
                     });

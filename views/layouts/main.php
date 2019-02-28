@@ -14,7 +14,7 @@ use yii\helpers\Url;
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 
 $modalButtons = [
-    Html::button('Закрыть', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']),
+    Html::button('Закрыть', ['class' => 'btn btn-default', 'data-dismiss' => 'modal', 'id' => 'close-changes-modal']),
     Html::button('Сохранить изменения', ['class' => 'btn btn-primary pull-left', 'id' => 'save-changes-modal'])
 ];
 

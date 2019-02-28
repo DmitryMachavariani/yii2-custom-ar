@@ -91,7 +91,7 @@ class Tasks extends \yii\db\ActiveRecord
             [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Projects::class, 'targetAttribute' => ['project_id' => 'id']],
             [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['assigned_to' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['created_by' => 'id']],
-            [['trackers'], 'exist', 'skipOnError' => true, 'targetClass' => Trackers::class, 'targetAttribute' => ['task_id' => 'id']],
+//            [['trackers'], 'exist', 'skipOnError' => true, 'targetClass' => Trackers::class, 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 

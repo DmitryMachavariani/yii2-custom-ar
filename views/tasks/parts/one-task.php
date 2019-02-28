@@ -86,20 +86,18 @@ $this->title = "Задача: {$model->title}";
         <div class="row">
             <h3>Файлы:</h3>
             <?php if (!empty($model->attachments)): ?>
-                    <ul class="documents-list">
-                        <?php foreach ($model->attachments as $file): ?>
-                            <li>
-                                <span class="glyphicon glyphicon-file"></span>
-                                <a target="_blank" href="<?=$file->getInternalFileUrl()?>"><?=$file->name?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
-                                <a href="/ajax/remove-file?file=<?=$file->id?>" class="js-remove-document"><span class="glyphicon glyphicon-remove"></span></a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+                <ul class="documents-list">
+                    <?php foreach ($model->attachments as $file): ?>
+                        <li>
+                            <span class="glyphicon glyphicon-file"></span>
+                            <a target="_blank" href="<?= $file->getInternalFileUrl() ?>"><?= $file->name ?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
+                            <a href="<?= Url::to(['ajax/remove-file', 'file' => $file->id]) ?>" class="js-remove-document"><span class="glyphicon glyphicon-remove"></span></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
                 <!-- /.row -->
             <?php endif; ?>
-            <div class="container">
-                <a href="<?= Url::to(['tasks/update', 'taskId' => $model->id]) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
-            </div>
+            <a href="<?= Url::to(['tasks/update', 'taskId' => $model->id]) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
         </div>
     </div>
 </section>

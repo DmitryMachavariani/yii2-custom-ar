@@ -13,7 +13,7 @@ use kartik\date\DatePicker;
  * @var $this \yii\web\View
  */
 
-$this->title = 'Создать новую задачу';
+$this->title = $model->isNewRecord ? 'Создать новую задачу' : 'Обновить задачу';
 ?>
 
 <h2><?=$this->title?></h2>

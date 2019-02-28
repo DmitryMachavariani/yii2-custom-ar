@@ -125,7 +125,7 @@ class AjaxController extends BaseController
             if ($model->save()) {
                 return ["msg" => "Успех", "type" => "success"];
             } else {
-                return ["msg" => "Возникла ошибка. Проверьте правильность заполнения данных", "type" => "fail"];
+                return ["msg" => "Возникла ошибка. Проверьте правильность заполнения данных", "type" => "danger"];
             }
         }
 

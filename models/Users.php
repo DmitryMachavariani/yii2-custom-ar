@@ -78,13 +78,23 @@ class Users extends User
 
     public function beforeSave($insert)
     {
-        $this->phone = Helper::minimizePhone($this->phone);
+        try {
+            $this->phone = Helper::minimizePhone($this->phone);
+        } catch (\Exception $e) {
+
+        }
+
         return parent::beforeSave($insert);
     }
 
     public function afterFind()
     {
-        $this->phone = Helper::maximizePhone($this->phone);
+        try {
+            $this->phone = Helper::maximizePhone($this->phone);
+        } catch (\Exception $e) {
+
+        }
+
         return parent::afterFind();
     }
 

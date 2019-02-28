@@ -8,13 +8,14 @@ use yii\helpers\Url;
 /**
  *
  * @var $dataProvider \yii\data\ActiveDataProvider
+ * @var $searchModel \app\models\TasksSearch
  * @var $projectId int
+ * @var $statuses array
  * @var $this \yii\web\View
  */
 
 $this->title = 'Задачи';
 ?>
-
 
 <?= Html::a('Завести задачу', ['tasks/create', 'projectId' => $projectId], ['class' => 'btn btn-success']) ?>
 
@@ -25,10 +26,12 @@ $this->title = 'Задачи';
     <div class="box-body table-responsive no-padding">
     <?= CustomGridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             [
                 'attribute' => 'title',
                 'format' => 'raw',
+                'filter' => false,
                 'value' => function (Tasks $task) {
                     return Html::a($task->title, ['tasks/task', 'taskId' => $task->id]);
                 }
@@ -42,6 +45,7 @@ $this->title = 'Задачи';
             ],
             [
                 'attribute' => 'status',
+                'filter' => $statuses,
                 'value' => function (Tasks $task) {
                     return Tasks::getStatus($task->status);
                 }
@@ -71,6 +75,17 @@ $this->title = 'Задачи';
             [
                 'attribute' => 'date_created',
                 'format' => 'raw',
+                'filter' => \kartik\date\DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'date_created',
+                    'pickerButton' => false,
+                    'pickerIcon' => false,
+                    'value' => $searchModel->date_created,
+                    'pluginOptions' => [
+                         'format' => 'yyyy-mm-dd',
+                         'todayHighlight' => true
+                    ]
+                ]),
                 'value' => function (Tasks $task) {
                     return date('Y-m-d', strtotime($task->date_created));
                 }

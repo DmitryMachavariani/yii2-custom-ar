@@ -49,25 +49,20 @@ class TasksController extends BaseController
     {
         $projectId = null;
 
-        $dataProvider = new ActiveDataProvider([
-            'sort' => false,
-            'query' => Tasks::find()
-                ->withAllRelation()
-                ->my()
-                ->orderBy(['h.id' => SORT_DESC])
-        ]);
+        $searchModel = new TasksSearch();
+        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams);
+        $statuses = Tasks::STATUSES;
 
-        return $this->render('tasks', compact('dataProvider', 'projectId'));
+        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));
     }
 
     public function actionTasks(int $projectId = null)
     {
-        $dataProvider = new ActiveDataProvider([
-            'sort' => false,
-            'query' => Tasks::find()->byProject($projectId)
-        ]);
+        $searchModel = new TasksSearch();
+        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, $projectId);
+        $statuses = Tasks::STATUSES;
 
-        return $this->render('tasks', compact('dataProvider', 'projectId'));
+        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));
     }
 
     /**

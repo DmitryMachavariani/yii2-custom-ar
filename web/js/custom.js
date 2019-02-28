@@ -1,4 +1,11 @@
 $(document).ready(function () {
+    /**
+     * после закрытия модального окна возвращаем ему дефолтный размер
+     */
+    $('#modal-default').on('hidden.bs.modal', function () {
+        $(this).children(0).removeClass('modal-lg').removeClass('modal-sm').removeClass('modal-md').addClass('modal-md');
+    });
+
 
     /**
      * Выводит alert бутстраповский
@@ -36,6 +43,49 @@ $(document).ready(function () {
 
         var alert = document.getElementById('alert-js');
         alert.append(newDiv);
+    }
+
+    /**
+     * Выводит alert бутстраповский
+     * @param msg
+     * @param type может быть info, warning, danger, success
+     */
+    function showAlertInModal(msg, type = 'success')
+    {
+        var icon = '';
+
+        switch (type) {
+            case 'info':
+                icon = 'fa-info';
+                break;
+
+            case 'success':
+                icon = 'fa-check';
+                break;
+
+            case 'warning':
+                icon = 'fa-warning';
+                break;
+
+            case 'danger':
+                icon = 'fa-ban';
+                break;
+        }
+
+        var newDiv = document.createElement("div");
+        newDiv.className = "alert alert-" + type + " alert-dismissible";
+        newDiv.innerHTML =
+            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+            '<h4><i class="icon fa ' + icon + '"></i> Внимание!</h4>' +
+            msg;
+
+        var alert = document.getElementById('alert-js-modal');
+        alert.append(newDiv);
+        setTimeout(function() {
+            $('#alert-js-modal').fadeOut(500, function() {
+                $(this).html('').show();
+            })
+        }, 1000);
     }
 
     /**
@@ -139,6 +189,9 @@ $(document).ready(function () {
         });
     });
 
+    /**
+     * клик по иконке удаления файла в задаче
+     */
     $('.js-remove-document').click(function () {
         var self = $(this);
         $.post(
@@ -152,5 +205,42 @@ $(document).ready(function () {
             }
         );
         return false;
+    });
+
+    /**
+     * клик по иконке трудозатрат в задаче
+     */
+    $('.fa-info-circle').click(function() {
+        var url = $(this).attr('data-url');
+        var id = $(this).attr('data-id');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'taskId': id
+            },
+            success: function (result) {
+                $('#save-changes-modal').attr('data-url', '/ajax/tracks-delete');
+                $('#modalContent').html(result);
+                $('#modal-default').modal('show').children(0).removeClass('modal-md').addClass('modal-lg');
+
+                /**
+                 * клик по иконке удаления трудозатрат в модальном окне трудозатрат
+                 */
+                $(document.body).find('.fa-trash').click(function() {
+                    var url = $(this).attr('data-url');
+
+                    $.ajax({
+                        // ВНИМАНИЕ GET, вместо POST
+                        type: 'GET',
+                        url: url,
+                        success: function (result) {
+                            showAlertInModal(result.msg, result.type);
+                        }
+                    });
+                });
+            }
+        });
     });
 });

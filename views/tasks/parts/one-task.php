@@ -38,7 +38,7 @@ $this->title = "Задача: {$model->title}";
         <div class="col-sm-4 invoice-col">
             Назначена <strong><?= $model->assigned->profile->fullName ?></strong>  <a href="#" class="fa fa-edit text-blue" data-id="<?= $model->id ?>" id="change-assigned"></a><br>
             Оценка трудозатрат <strong><?= $model->estimate ?></strong> ч.<br>
-            Трудозатрат <strong><?= $model->tracked ?></strong> ч.<br>
+            Трудозатраты <strong><?= $model->tracked ?></strong> ч. <a href="#" class="fa fa-info-circle" title="Список треков" data-url="<?= Url::to(['ajax/tracks']) ?>" data-id="<?= $model->id ?>"></a> <br>
             Приоритет <strong><?= Tasks::getPriorityColored($model->priority) ?></strong><br>
         </div>
         <!-- /.col -->
@@ -82,7 +82,7 @@ $this->title = "Задача: {$model->title}";
         </div>
         <!-- /.row -->
     <?php endif; ?>
-    <div class="container margin-bottom">
+    <div class="margin-bottom">
         <div class="row">
             <h3>Файлы:</h3>
             <?php if (!empty($model->attachments)): ?>

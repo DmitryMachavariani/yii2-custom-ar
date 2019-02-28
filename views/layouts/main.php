@@ -45,6 +45,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Url::t
         'footer' => implode(' ', $modalButtons),
     ]);
 
+    echo Html::tag('div', null, ['id' => 'alert-js-modal']);
     echo Html::tag('div', '', ['id' => 'modalContent']);
 
     Modal::end();

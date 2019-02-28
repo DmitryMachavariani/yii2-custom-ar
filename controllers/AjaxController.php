@@ -94,7 +94,6 @@ class AjaxController extends BaseController
             $userName = Users::find()->where(['id' => $userId])->one();
             History::create(History::TYPE_CHANGE_ASSIGN_TO, History::MODEL_TASKS, $task->id);
 
-
             return ["msg" => "Исполнитель изменен на {$userName->username}", "type" => "success"];
         }
 
@@ -160,9 +159,13 @@ class AjaxController extends BaseController
         }
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function actionTasks()
     {
-        if (@$_GET['test']) {
+        if (isset($_GET['test'])) {
             return $this->testTasks();
         }
         $searchModel = new GanttForm();
@@ -179,5 +182,38 @@ class AjaxController extends BaseController
     protected function testTasks()
     {
         return GanttForm::getTestTask();
+    }
+
+    public function actionTracks()
+    {
+        $taskId = $this->post['taskId'] ?? '';
+
+        $trackers = Trackers::find()
+            ->alias('t')
+            ->withUser()
+            ->where(['t.task_id' => $taskId])
+            ->all();
+
+        return $this->renderAjax('tracks', compact('trackers'));
+    }
+
+    /**
+     * @param int $trackId
+     *
+     * @return array
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionRemoveTrack(int $trackId)
+    {
+        $track = Trackers::findOne($trackId);
+
+        if ($track)
+        {
+            $track->delete();
+            return ['type' => 'success', 'msg' => 'Успешно удалено'];
+        }
+
+        return ['type' => 'danger', 'msg' => 'Возникли ошибки.'];
     }
 }

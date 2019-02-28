@@ -91,19 +91,19 @@ class Trackers extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getStatuses()
+    public static function getTypes()
     {
         return self::TYPES;
     }
 
     /**
-     * @param int $status
+     * @param int $type
      *
      * @return mixed|string
      */
-    public static function getStatus(int $status)
+    public static function getType(int $type)
     {
-        return self::TYPES[$status] ?? '';
+        return self::TYPES[$type] ?? '';
     }
 
     public function beforeSave($insert)

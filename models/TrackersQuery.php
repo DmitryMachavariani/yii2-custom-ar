@@ -9,10 +9,10 @@ namespace app\models;
  */
 class TrackersQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function withUser()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->joinWith(['user']);
+    }
 
     /**
      * {@inheritdoc}

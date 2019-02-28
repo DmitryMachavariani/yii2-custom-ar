@@ -81,7 +81,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'assigned_to'], 'required'],
+            [['title', 'assigned_to', 'estimate'], 'required'],
             [['project_id', 'status', 'priority', 'assigned_to', 'assigned_to', 'notify'], 'integer'],
             [['description'], 'string'],
             [['estimate'], 'number'],

@@ -36,6 +36,7 @@ class Projects extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['title', 'required'],
             [['description'], 'string'],
             [['date_created', 'date_updated'], 'safe'],
             [['title'], 'string', 'max' => 255],

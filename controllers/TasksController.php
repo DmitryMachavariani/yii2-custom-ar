@@ -160,4 +160,9 @@ class TasksController extends BaseController
 
         return $this->render('tasks', compact('dataProvider', 'projectId'));
     }
+
+    public function actionGantt()
+    {
+        return $this->render('gantt');
+    }
 }

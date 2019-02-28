@@ -25,6 +25,10 @@ use yii\web\UploadedFile;
  * @property int $notify
  * @property string $date_created
  * @property string $date_updated
+ * @property string              $planned_start_date
+ * @property string              $planned_end_date
+ * @property string              $real_start_date
+ * @property string              $real_end_date
  *
  * @property Projects $project
  * @property Users $assigned
@@ -81,7 +85,7 @@ class Tasks extends \yii\db\ActiveRecord
             [['project_id', 'status', 'priority', 'assigned_to', 'assigned_to', 'notify'], 'integer'],
             [['description'], 'string'],
             [['estimate'], 'number'],
-            [['date_created', 'date_updated', 'files'], 'safe'],
+            [['date_created', 'date_updated', 'files', 'planned_start_date', 'planned_end_date', 'real_start_date', 'real_end_date',], 'safe'],
             [['title'], 'string', 'max' => 255],
 
             [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Projects::class, 'targetAttribute' => ['project_id' => 'id']],
@@ -107,6 +111,10 @@ class Tasks extends \yii\db\ActiveRecord
             'notify' => 'Уведомить',
             'date_created' => 'Дата создания',
             'date_updated' => 'Дата обновления',
+            'planned_start_date' => 'План. дата начала',
+            'planned_end_date' => 'План. дата окончания',
+            'real_start_date' => 'Факт. дата начала',
+            'real_end_date' => 'Факт. дата окончания',
             'files' => 'Файлы',
         ];
     }

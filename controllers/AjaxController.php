@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\models\Files;
+use app\models\GanttForm;
 use app\models\History;
 use app\models\notifications\Notification;
 use app\models\Tasks;
@@ -157,5 +158,26 @@ class AjaxController extends BaseController
                 'message' => $e->getMessage()
             ];
         }
+    }
+
+    public function actionTasks()
+    {
+        if (@$_GET['test']) {
+            return $this->testTasks();
+        }
+        $searchModel = new GanttForm();
+        $params = \Yii::$app->request->queryParams;
+        $searchModel->searchTasks($params);
+        list($data, $links) = $searchModel->formatTasks();
+
+        return compact('data', 'links');
+    }
+
+    /**
+     * @return array
+     */
+    protected function testTasks()
+    {
+        return GanttForm::getTestTask();
     }
 }

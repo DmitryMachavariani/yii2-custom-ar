@@ -96,7 +96,7 @@ class UserController extends BaseController
             if ($profile->validate()) {
                 if ($profile->photo) {
                     $name = \Yii::$app->security->generateRandomString(10);
-                    $fullName = $name . '.' . $model->profile->photo->extension;
+                    $fullName = $name . '.' . $profile->photo->extension;
                     $path = \Yii::getAlias('@uploads/') . $fullName;
 
                     $profile->photo->saveAs($path);

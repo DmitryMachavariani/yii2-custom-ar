@@ -224,4 +224,12 @@ class Users extends User
                 Settings::tableName() . '.value' => $telegramId,
             ])->one();
     }
+
+    public function generatePassword()
+    {
+        $password = Yii::$app->security->generateRandomString(rand(8, 12));
+        $this->password = Yii::$app->security->generatePasswordHash($password);
+
+        return $password;
+    }
 }

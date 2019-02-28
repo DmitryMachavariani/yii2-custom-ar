@@ -2,6 +2,9 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\components\notification\NotifyFactory;
+use app\models\notifications\Notification;
+use app\models\Profile;
 use app\models\Settings;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
@@ -37,6 +40,7 @@ class UserController extends BaseController
             ->where(['u.id' => $id])
             ->withProfile()
             ->one();
+        $profile = $model->profile;
 
         $userLoad = $model->load(\Yii::$app->request->post());
         $profileLoad = $model->profile->load(\Yii::$app->request->post());
@@ -67,6 +71,52 @@ class UserController extends BaseController
         }
 
 
-        return $this->render('form', compact('model', 'settingsModel'));
+        return $this->render('form', compact('model', 'settingsModel', 'profile'));
+    }
+
+    /**
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
+     */
+    public function actionCreate()
+    {
+        $settingsModel = new Settings();
+
+        $model = new Users();
+        $profile = new Profile();
+
+        $userLoad = $model->load(\Yii::$app->request->post());
+        $profileLoad = $profile->load(\Yii::$app->request->post());
+
+        $password = $model->generatePassword();
+        if ($profileLoad && $userLoad && $model->save()) {
+            $profile->photo = UploadedFile::getInstance($profile, 'photo');
+            $profile->user_id = $model->id;
+
+            if ($profile->validate()) {
+                if ($profile->photo) {
+                    $name = \Yii::$app->security->generateRandomString(10);
+                    $fullName = $name . '.' . $model->profile->photo->extension;
+                    $path = \Yii::getAlias('@uploads/') . $fullName;
+
+                    $profile->photo->saveAs($path);
+                    $profile->photo = $fullName;
+                }
+
+                $profile->save();
+            }
+            $settingsModel->user_id = $model->id;
+            if ($settingsModel->load(\Yii::$app->request->post())) {
+                $settingsModel->saveData();
+            }
+            \Yii::$app->queue->push(NotifyFactory::create(Notification::TYPE_MAIL)
+                ->setMessage('Ваши учетные данные: ' . PHP_EOL . "Логин: {$model->username}. Пароль: {$password}"));
+
+            \Yii::$app->session->setFlash('success', 'Пользователь успешно сохранен');
+            return $this->redirect(['user/index']);
+        }
+
+
+        return $this->render('form', compact('model', 'settingsModel', 'profile'));
     }
 }

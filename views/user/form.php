@@ -8,6 +8,7 @@ use app\models\Settings;
 /**
  * @var $this         \yii\web\View
  * @var $model        \app\models\Users
+ * @var $profile      \app\models\Profile
  * @var $settingsModel\app\models\Settings
  */
 $this->title = 'Управление пользователем';
@@ -21,25 +22,27 @@ $this->title = 'Управление пользователем';
     <div class="container-clear">
         <div class="raw">
             <div class="col-md-6">
+                <?= $form->field($model, 'username') ?>
                 <?= $form->field($model, 'email') ?>
                 <?= $form->field($model, 'phone') ?>
                 <?= $form->field($model, 'status')->dropDownList(
                     Users::STATUSES
                 ) ?>
-                <?= $form->field($model->profile, 'job') ?>
+
             </div>
             <div class="col-md-6">
-                <?= $form->field($model->profile, 'last_name') ?>
-                <?= $form->field($model->profile, 'first_name') ?>
-                <?= $form->field($model->profile, 'middle_name') ?>
+                <?= $form->field($profile, 'last_name') ?>
+                <?= $form->field($profile, 'first_name') ?>
+                <?= $form->field($profile, 'middle_name') ?>
+                <?= $form->field($profile, 'job') ?>
             </div>
         </div>
     </div>
     <div class="container-clear">
         <div class="raw">
             <div class="col-md-6">
-                <?= $form->field($model->profile, 'photo')->fileInput() ?>
-                <img src="<?= $model->profile->getAvatar(200, 200) ?>"
+                <?= $form->field($profile, 'photo')->fileInput() ?>
+                <img src="<?= $profile->getAvatar(200, 200) ?>"
                      class="image" width="200" alt="User Avatar"/>
             </div>
             <div class="col-md-6">

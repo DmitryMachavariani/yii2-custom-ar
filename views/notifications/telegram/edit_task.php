@@ -1,5 +1,6 @@
-<p>Привет, <?=$user->username?>!</p>
-Произошли изменения по задаче: <a href="<?=Yii::$app->params['baseUrl']?>/tasks/task?taskId=<?=$task->id?>"><?=$task->title?></a>. <br />
-<pre>
-<?=mb_strcut($task->description, 0, 20)?>...
-</pre>
+Привет, <?=$user->username . PHP_EOL?>
+Произошли изменения по задаче: <?=$task->title?> (<?=Yii::$app->params['baseUrl']?>tasks/task?taskId=<?=$task->id?>). <?=PHP_EOL?>
+###
+<?=mb_strcut(strip_tags($task->description), 0, 30)?>...
+###
+<?=PHP_EOL?>

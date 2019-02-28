@@ -2,7 +2,7 @@
 
 $data = [
     'class' => app\components\Bot\Bot::class,
-    'token' => '697551165:AAElBWtrSf6WXNeRGFw4uqRlZz_VZq-emtQ',
+    'token' => '551578521:AAGzW24Qyi-GO_K3LLFU57r72ubrfX-J9p8',
     'usePassword' => false,
     'objectsLimit' => 50,
     'cacheTime' => 24 * 60 * 60, // minutes

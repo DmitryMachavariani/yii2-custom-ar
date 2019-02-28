@@ -62,47 +62,41 @@ $this->title = 'Управление пользователем';
                         )
                     ]
                 ) ?>
-                <div class="raw">
-                    <div class="col-md-6">
-                        <?= $form->field($settingsModel, 'key')->hiddenInput(
-                            [
-                                'name' => $settingsModel->formName()
-                                    . '[key][0]',
-                                'value' => Settings::USE_TELEGRAM
-                            ]
-                        )->label(false) ?>
-                        <?= $form->field($settingsModel, 'value')->checkbox(
-                            [
-                                'name' => $settingsModel->formName()
-                                    . '[value][0]',
-                                'label' => Settings::getLabel(
-                                    Settings::USE_TELEGRAM
-                                ),
-                                'checked' => (bool)Settings::getValue(
-                                    $model->id, Settings::USE_TELEGRAM
-                                )
-                            ]
-                        ) ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?= $form->field($settingsModel, 'key')->hiddenInput(
-                            [
-                                'name' => $settingsModel->formName()
-                                    . '[key][1]',
-                                'value' => Settings::TELEGRAM_ID
-                            ]
-                        )->label(false) ?>
-                        <?= $form->field($settingsModel, 'value')->textInput(
-                            [
-                                'name' => $settingsModel->formName()
-                                    . '[value][1]',
-                                'value' => Settings::getValue(
-                                    $model->id, Settings::TELEGRAM_ID
-                                )
-                            ]
-                        )->label(Settings::getLabel(Settings::TELEGRAM_ID)) ?>
-                    </div>
-                </div>
+                <?= $form->field($settingsModel, 'key')->hiddenInput(
+                    [
+                        'name' => $settingsModel->formName()
+                            . '[key][0]',
+                        'value' => Settings::USE_TELEGRAM
+                    ]
+                )->label(false) ?>
+                <?= $form->field($settingsModel, 'value')->checkbox(
+                    [
+                        'name' => $settingsModel->formName()
+                            . '[value][0]',
+                        'label' => Settings::getLabel(
+                            Settings::USE_TELEGRAM
+                        ),
+                        'checked' => (bool)Settings::getValue(
+                            $model->id, Settings::USE_TELEGRAM
+                        )
+                    ]
+                ) ?>
+                <?= $form->field($settingsModel, 'key')->hiddenInput(
+                    [
+                        'name' => $settingsModel->formName()
+                            . '[key][1]',
+                        'value' => Settings::TELEGRAM_ID
+                    ]
+                )->label(false) ?>
+                <?= $form->field($settingsModel, 'value')->textInput(
+                    [
+                        'name' => $settingsModel->formName()
+                            . '[value][1]',
+                        'value' => Settings::getValue(
+                            $model->id, Settings::TELEGRAM_ID
+                        )
+                    ]
+                )->label(Settings::getLabel(Settings::TELEGRAM_ID)) ?>
             </div>
         </div>
     </div>

@@ -41,13 +41,13 @@ function init()
     gantt.config.drag_links = false;
     gantt.config.show_progress = false;
 
-    $('<a />').attr({
+/*    $('<a />').attr({
         'href': '#',
         'class': 'btn btn-success',
         'id': 'fullscreen'
     }).css({
         'position': 'absolute'
-    }).html('<span class="glyphicon glyphicon-resize-full"></span>').appendTo($('#wrapper'));
+    }).html('<span class="glyphicon glyphicon-resize-full"></span>').appendTo($('#wrapper'));*/
     getTasks();
     loadGantt('tasks');
 }
@@ -130,12 +130,12 @@ function lagsAndAdvance()
 function getTasks()
 {
     gantt.config.columns = [
-        {name: "text", label: "Проект/Задача", min_width: 300, resize:true, tree: true},
-        {name: "start_date", label:"Начало план", align: "center", width: 110, resize:true},
-        {name: "end_date", label:"Конец план", align: "center", width: 110, template: function(task) {
+        {name: "text", label: "Задача", min_width: 200, resize:true, tree: true},
+        {name: "start_date", label:"Начало", align: "center", width: 90, resize:true},
+        {name: "end_date", label:"Конец", align: "center", width: 90, template: function(task) {
                 return gantt.templates.date_grid(task.end_date, task);
             }, resize:true},
-        {name: "duration", label:"Длительность", align: "center", width: 120, resize:true}
+        {name: "duration", label:"Длит", align: "center", width: 80, resize:true}
         // {name: "lag", label:"Отставание", align: "center", width: 120, resize:true},
         // {name: "advance", label:"Опережение", align: "center", width: 120, resize:true},
     ];
@@ -174,7 +174,7 @@ function setMarker() {
         start_date: new Date(),
         css: "today",
         title: date_to_str( new Date()),
-        text: 'Сегодня'
+        text: ''
     });
     setInterval(function(){
         var today = gantt.getMarker(id);
@@ -186,6 +186,18 @@ function setMarker() {
 
 function setScaleConfig(level) {
     switch (level) {
+        case 'hour':
+            gantt.config.scale_unit = "day";
+            gantt.config.step = 1;
+            gantt.config.date_scale = "%d %M";
+            gantt.templates.date_scale = null;
+            gantt.config.min_column_width = 50;
+            gantt.config.scale_height = 80;
+
+            gantt.config.subscales = [
+                {unit: "hour", step: 1, date: "%H:%i"},
+            ];
+            break;
         case "day":
             gantt.config.scale_unit = "day";
             gantt.config.step = 1;

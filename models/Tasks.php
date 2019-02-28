@@ -275,11 +275,17 @@ class Tasks extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->isNewRecord) {
-            $this->date_created = date('Y-m-d G:i:s');
+            $this->date_created = date('Y-m-d H:i:s');
         }
 
-        $this->date_updated = date('Y-m-d G:i:s');
+        $this->date_updated = date('Y-m-d H:i:s');
         $this->created_by = Yii::$app->user->id;
+        if (empty($this->planned_start_date)) {
+            $this->planned_start_date = $this->date_created;
+        }
+        if (empty($this->planned_end_date)) {
+            $this->planned_end_date = date('Y-m-d', strtotime($this->planned_start_date . ' + 1 days'));
+        }
 
         return parent::beforeSave($insert);
     }

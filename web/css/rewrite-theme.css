@@ -5,3 +5,18 @@ ul.documents-list {
 ul.documents-list li {
     padding: 5px 0;
 }
+
+.container-clear {
+    display: inline-block;
+    width: 100%;
+}
+
+.layout-boxed .wrapper {
+    max-width: none;
+}
+
+#loader {
+    position: absolute;
+    top: 0;
+    left: 35%;
+}

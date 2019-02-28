@@ -8,6 +8,7 @@ use app\models\Profile;
 use app\models\Settings;
 use app\models\Users;
 use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
 class UserController extends BaseController
@@ -122,5 +123,29 @@ class UserController extends BaseController
         }
 
         return $this->render('form', compact('model', 'settingsModel', 'profile'));
+    }
+
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+        \Yii::$app->session->setFlash('success', 'Запись успешно удалена');
+
+        return $this->redirect(\Yii::$app->request->getReferrer());
+    }
+
+    /**
+     * Finds the Actions model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Users the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Users::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

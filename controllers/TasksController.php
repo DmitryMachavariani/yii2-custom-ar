@@ -156,8 +156,10 @@ class TasksController extends BaseController
     {
         $projectId = null;
         $dataProvider = TasksSearch::search(\Yii::$app->request->get('q', null));
+        $searchModel = new TasksSearch();
+        $statuses = Tasks::STATUSES;
 
-        return $this->render('tasks', compact('dataProvider', 'projectId'));
+        return $this->render('tasks', compact('dataProvider', 'projectId', 'searchModel', 'statuses'));
     }
 
     public function actionGantt()

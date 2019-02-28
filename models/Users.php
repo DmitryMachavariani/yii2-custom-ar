@@ -41,7 +41,8 @@ class Users extends User
             [['status'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 65],
-            [['email', 'phone'], 'string', 'max' => 255],
+            [['email'], 'string', 'max' => 255],
+//            [['phone'], 'string', 'max' => 255],
 
 //            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];

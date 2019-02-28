@@ -90,7 +90,9 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
-            NotifyFactory::notifyUser($model->assigned_to, $model->id, 'Новая задача');
+            NotifyFactory::notifyUser($model->assigned_to, $model->id, [
+                'view' => 'new_task'
+            ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно заведена');
             return $this->refresh();
         }
@@ -119,7 +121,9 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
-            NotifyFactory::notifyUser($model->assigned_to, $model->id, 'Задача обновлена');
+            NotifyFactory::notifyUser($model->assigned_to, $model->id, [
+                'view' => 'edit_task'
+            ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно обновлена');
             return $this->redirect(['tasks/task', 'taskId' => $model->project_id]);
         }

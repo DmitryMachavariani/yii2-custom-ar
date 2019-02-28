@@ -10,6 +10,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use \BotMan\Drivers\Telegram\TelegramPhotoDriver;
 use app\components\Bot\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
+use yii\web\View;
 
 /**
  * Class Bot
@@ -43,21 +44,6 @@ class Bot extends Component
      * @var string
      */
     public $proxyAuth;
-
-    /**
-     * @var int
-     */
-    public $objectsLimit;
-
-    /**
-     * @var int
-     */
-    public $messageSymbolsLimit;
-
-    /**
-     * @var int
-     */
-    public $notifyTask;
 
     /**
      * @var int
@@ -103,6 +89,11 @@ class Bot extends Component
      * @var array
      */
     protected $map = [];
+
+    /**
+     * @var string
+     */
+    public $viewPath;
 
     /**
      * @return BotMan
@@ -154,15 +145,20 @@ class Bot extends Component
     }
 
     /**
-     * @param $chatId
-     * @param $message
+     * @param       $chatId
+     * @param array $params
      *
      * @return mixed
      * @throws \BotMan\BotMan\Exceptions\Base\BotManException
      */
-    public function sendCustomChat($chatId, $message)
+    public function sendCustomChat($chatId, $params = [])
     {
-        return $this->bot->say($message, $chatId);
+        $view = new View();
+        $message = $view->renderFile($this->viewPath . '/' . ($params['view'] ? "{$params['view']}.php" : ''), $params);
+
+        return $this->bot->say($message, $chatId, null, [
+            'mode' => 'HTML'
+        ]);
     }
 
     /**

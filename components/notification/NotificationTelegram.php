@@ -4,6 +4,7 @@ namespace app\components\notification;
 
 use app\models\Users;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class NotificationTelegram.
@@ -17,7 +18,7 @@ class NotificationTelegram extends NotifyFactory
         if (empty($this->userId) || !($user = Users::findOne($this->userId)) || !$user->hasTelegram()) {
             return false;
         }
-
-        \Yii::$app->bot->sendCustomChat($user->getTelegramId(), $this->message);
+        $this->params = ArrayHelper::merge($this->params, ['user' => $user, 'task' => $this->task]);
+        \Yii::$app->bot->sendCustomChat($user->getTelegramId(), $this->params);
     }
 }

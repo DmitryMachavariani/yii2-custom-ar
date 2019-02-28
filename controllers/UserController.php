@@ -111,12 +111,15 @@ class UserController extends BaseController
             }
             \Yii::$app->queue->push(NotifyFactory::create(Notification::TYPE_MAIL)
                 ->setUserId($model->id)
-                ->setMessage('Ваши учетные данные: ' . PHP_EOL . "Логин: {$model->username}. Пароль: {$password}"));
+                ->setParams([
+                    'view' => 'register',
+                    'password' => $password
+                ]));
+            ;
 
             \Yii::$app->session->setFlash('success', 'Пользователь успешно сохранен');
             return $this->redirect(['user/index']);
         }
-
 
         return $this->render('form', compact('model', 'settingsModel', 'profile'));
     }

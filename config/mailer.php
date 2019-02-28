@@ -9,6 +9,7 @@ $data = [
         'password' => 'password',
         'port' => '111',
     ],
+    'viewPath' => '@app/views/notifications/email'
 ];
 
 if (file_exists(dirname(__FILE__) . '/local.mailer.php')) {

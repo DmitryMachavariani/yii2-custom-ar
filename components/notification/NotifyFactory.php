@@ -4,6 +4,7 @@ namespace app\components\notification;
 
 use app\models\notifications\Notification;
 use app\models\Settings;
+use app\models\Tasks;
 use app\models\Users;
 
 abstract class NotifyFactory implements \yii\queue\JobInterface
@@ -24,17 +25,29 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
     protected $userId;
 
     /**
-     * @param      $userId
-     * @param null $taskId
-     * @param null $message
+     * @var array
      */
-    public static function notifyUser($userId, $taskId = null, $message = null)
+    protected $params;
+
+    /**
+     * @var Tasks
+     */
+    protected $task;
+
+    /**
+     * @param       $userId
+     * @param null  $taskId
+     * @param array $params
+     * @param null  $message
+     */
+    public static function notifyUser($userId, $taskId = null, $params = [], $message = null)
     {
         /** @var NotifyFactory[] $notifies */
         $notifies = [
             self::create(Notification::TYPE_INSIDE)
         ];
         $notifications = Users::findOne($userId)->getNotifications();
+        $task = $taskId ? Tasks::findOne($taskId) : null;
 
         foreach ($notifications as $key => $value) {
             switch ($key) {
@@ -52,7 +65,9 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
         foreach ($notifies as $notify) {
             $notify->setUserId($userId)
                 ->setTaskId($taskId)
-                ->setMessage($message);
+                ->setMessage($message)
+                ->setParams($params)
+                ->setTask($task);
             \Yii::$app->queue->push($notify);
         }
     }
@@ -89,7 +104,7 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
      *
      * @return NotifyFactory
      */
-    public function setTaskId(int $taskId)
+    public function setTaskId($taskId)
     {
         $this->taskId = $taskId;
 
@@ -101,7 +116,7 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
      *
      * @return NotifyFactory
      */
-    public function setUserId(int $userId)
+    public function setUserId($userId)
     {
         $this->userId = $userId;
 
@@ -113,9 +128,28 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
      *
      * @return NotifyFactory
      */
-    public function setMessage(string $message)
+    public function setMessage($message)
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return NotifyFactory
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+    public function setTask($task)
+    {
+        $this->task = $task;
 
         return $this;
     }

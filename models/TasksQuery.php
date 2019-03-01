@@ -55,7 +55,7 @@ class TasksQuery extends \yii\db\ActiveQuery
      */
     public function byProject(int $projectId = null): TasksQuery
     {
-        return $projectId ? $this->andWhere(['project_id' => $projectId]) : $this;
+        return $projectId ? $this->andWhere([Tasks::tableName() . '.project_id' => $projectId]) : $this;
     }
 
     /**

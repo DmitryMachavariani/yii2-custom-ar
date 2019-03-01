@@ -130,6 +130,22 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getProjectUser()
+    {
+        return $this->hasMany(ProjectUser::class, ['project_id' => 'id'])->via('project');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMembers()
+    {
+        return $this->hasMany(User::class, ['id' => 'user_id'])->via('projectUser');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getHistory()
     {
         return $this->hasMany(History::class, ['model_id' => 'id'])

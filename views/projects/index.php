@@ -43,6 +43,11 @@ $this->title = 'Проекты';
                     }
                 ],
                 'date_created',
+                [
+                    'header' => 'Действия',
+                    'class' => '\yii\grid\ActionColumn',
+                    'template' => '{update}&nbsp;&nbsp;&nbsp;{delete}'
+                ]
             ]
         ]) ?>
     </div>

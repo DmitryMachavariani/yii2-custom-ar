@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Profile $profile
  * @property Settings[] $settings
+ * @property Projects[] $projects
  */
 class Users extends User
 {
@@ -231,5 +232,21 @@ class Users extends User
         $this->password = Yii::$app->security->generatePasswordHash($password);
 
         return $password;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProjectUser()
+    {
+        return $this->hasMany(ProjectUser::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProjects()
+    {
+        return $this->hasMany(Projects::class, ['id' => 'project_id'])->via('projectUser');
     }
 }

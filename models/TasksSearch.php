@@ -64,13 +64,19 @@ class TasksSearch extends Tasks
      *
      * @param int|null $projectId
      *
+     * @param bool     $onlyMyTasks
+     *
      * @return ActiveDataProvider
      */
-    public function searchGrid(array $params, int $projectId = null)
+    public function searchGrid(array $params, int $projectId = null, $onlyMyTasks = false)
     {
         $query = Tasks::find()
-            ->withAllRelation()
-            ->my();
+            ->withAllRelation();
+        if ($onlyMyTasks) {
+            $query = $query->my();
+        } else {
+            $query = $query->iCanSee();
+        }
 
         if ($projectId) {
             $query->byProject($projectId);

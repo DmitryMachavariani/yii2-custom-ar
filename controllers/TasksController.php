@@ -50,7 +50,7 @@ class TasksController extends BaseController
         $projectId = null;
 
         $searchModel = new TasksSearch();
-        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, null, true);
         $statuses = Tasks::STATUSES;
 
         return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));
@@ -59,7 +59,7 @@ class TasksController extends BaseController
     public function actionTasks(int $projectId = null)
     {
         $searchModel = new TasksSearch();
-        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, $projectId);
+        $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, $projectId, false);
         $statuses = Tasks::STATUSES;
 
         return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));

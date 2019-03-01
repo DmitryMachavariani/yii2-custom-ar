@@ -31,7 +31,7 @@
                 'items' => [
                     ['label' => 'Пользователи', 'icon' => 'user', 'url' => ['user/index']],
                     ['label' => 'Проекты', 'icon' => 'cogs', 'url' => ['projects/index']],
-                    ['label' => 'Мои задачи', 'icon' => 'tasks', 'url' => ['tasks/my-tasks']],
+                    ['label' => 'Задачи', 'icon' => 'tasks', 'url' => ['tasks/tasks']],
                     ['label' => 'Гантт', 'icon' => 'file-text', 'url' => ['tasks/gantt']],
                     ['label' => 'Выход', 'icon' => 'user-times', 'url' => ['site/logout']],
                 ],

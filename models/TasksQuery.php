@@ -28,6 +28,16 @@ class TasksQuery extends \yii\db\ActiveQuery
         return $this->andWhere(['assigned_to' => \Yii::$app->user->id]);
     }
 
+    public function iCanSee()
+    {
+        return $this
+            ->joinWith('members m')
+            ->andWhere([
+                'm.id' => \Yii::$app->user->id
+            ])
+            ->orWhere(['assigned_to' => \Yii::$app->user->id]);
+    }
+
     /**
      * @param int $userId
      *

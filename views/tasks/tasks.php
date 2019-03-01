@@ -17,6 +17,7 @@ use yii\helpers\Url;
 $this->title = 'Задачи';
 ?>
 
+<?= Html::a('Мои задачи', ['tasks/my-tasks'], ['class' => 'btn btn-success']) ?>&nbsp;
 <?= Html::a('Завести задачу', ['tasks/create', 'projectId' => $projectId], ['class' => 'btn btn-success']) ?>
 
 <br>

@@ -6,6 +6,7 @@ use app\components\BaseController;
 use app\components\Bot\Curl;
 use app\components\notification\NotifyFactory;
 use app\models\notifications\Notification;
+use app\models\Projects;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Response;
@@ -106,15 +107,7 @@ class SiteController extends BaseController
 
     public function actionTest()
     {
-        $notify = NotifyFactory::create(Notification::TYPE_MAIL)
-            ->setUserId(1)
-            ->setTaskId(18)
-            ->setMessage('Testewrwe');
-
-        Yii::$app->queue->push($notify);
-//        $notify->send();
-        var_export($notify);
-        die('ok');
+        //
     }
 
 }

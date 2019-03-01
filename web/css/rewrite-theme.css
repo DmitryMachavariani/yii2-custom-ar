@@ -21,3 +21,12 @@ ul.documents-list li {
     top: 0;
     left: 35%;
 }
+
+.list-members label {
+    display: inline-block;
+    width: 100%;
+}
+
+.list-members .form-control {
+    height: 100%;
+}

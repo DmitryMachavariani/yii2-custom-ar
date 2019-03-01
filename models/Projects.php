@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveQuery;
+use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 
 /**
  * This is the model class for table "projects".
@@ -18,6 +19,7 @@ use yii\db\ActiveQuery;
  * @property int $percentComplete
  *
  * @property Tasks[] $tasks
+ * @property Users[] $members
  */
 class Projects extends \yii\db\ActiveRecord
 {
@@ -40,6 +42,18 @@ class Projects extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['date_created', 'date_updated'], 'safe'],
             [['title'], 'string', 'max' => 255],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'saveRelations' => [
+                'class'     => SaveRelationsBehavior::class,
+                'relations' => [
+                    'members',
+                ],
+            ],
         ];
     }
 
@@ -74,6 +88,16 @@ class Projects extends \yii\db\ActiveRecord
         return new ProjectsQuery(get_called_class());
     }
 
+    public function getProjectUser()
+    {
+        return $this->hasMany(ProjectUser::class, ['project_id' => 'id']);
+    }
+
+    public function getMembers()
+    {
+        return $this->hasMany(Users::class, ['id' => 'user_id'])->via('projectUser');
+    }
+
     public function beforeSave($insert)
     {
         if ($this->isNewRecord) {
@@ -83,5 +107,16 @@ class Projects extends \yii\db\ActiveRecord
         $this->date_updated = date('Y-m-d G:i:s');
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * @param $usersIds
+     *
+     * @return bool
+     */
+    public function addMembers($usersIds)
+    {
+        $this->members = $usersIds;
+        return $this->save();
     }
 }

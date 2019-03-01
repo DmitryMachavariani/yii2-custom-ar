@@ -22,11 +22,13 @@ class History extends \yii\db\ActiveRecord
     const TYPE_CHANGE_STATUS = 0;
     const TYPE_ADD_FILE = 1;
     const TYPE_CHANGE_ASSIGN_TO = 2;
+    const TYPE_CHANGE_ATTRIBUTES = 3;
 
     const TYPES = [
         self::TYPE_CHANGE_STATUS => 'Сменился статус у задачи',
         self::TYPE_CHANGE_ASSIGN_TO => 'Сменился назначенный человек',
         self::TYPE_ADD_FILE => 'Прикреплен файл',
+        self::TYPE_CHANGE_ATTRIBUTES => 'Изменились аттрибуты',
     ];
 
     /**
@@ -45,6 +47,7 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['type', 'model_id', 'model_name'], 'required'],
             [['type', 'model_id', 'author_id'], 'integer'],
             [['comment'], 'string'],
             [['date'], 'safe'],
@@ -135,16 +138,17 @@ class History extends \yii\db\ActiveRecord
      * @param string $type
      * @param string $modelName
      * @param int    $modelId
+     * @param string $comment
      *
      * @return bool
      */
-    public static function create(string $type, string $modelName, int $modelId)
+    public static function create(string $type, string $modelName, int $modelId, string $comment = '')
     {
         $model = new History();
         $model->model_name = $modelName;
         $model->model_id = $modelId;
         $model->type = $type;
-        $model->comment = History::TYPES[$type];
+        $model->comment = $comment;
 
         return $model->save();
     }

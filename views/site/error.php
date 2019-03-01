@@ -7,21 +7,25 @@
 
 use yii\helpers\Html;
 
-$this->title = $name;
+$this->title = $code . " ошибка";
 ?>
-<div class="site-error">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<section class="content">
 
-    <div class="alert alert-danger">
-        <?= nl2br(Html::encode($message)) ?>
+    <div class="error-page">
+        <h2 class="headline text-red"><?= $code ?></h2>
+
+        <br>
+
+        <div class="error-content">
+            <h3><i class="fa fa-warning text-red"></i> Прошу прощения.</h3>
+
+            <p><?= nl2br(Html::encode($message)) ?></p>
+
+            <?= Html::a('На главную', ['site/login'], ['class' => 'btn btn-lg btn-primary']) ?>
+
+        </div>
     </div>
+    <!-- /.error-page -->
+</section>
 
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
-
-</div>

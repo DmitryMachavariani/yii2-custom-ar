@@ -74,6 +74,8 @@ $this->title = "Задача: {$model->title}";
                             <span class="time"><i class="fa fa-clock-o"></i> <?= date('G:i', strtotime($history->date)) ?></span>
 
                             <h3 class="timeline-header"><a href="#"><?= History::getType($history->type) ?></a></h3>
+
+                            <div class="timeline-body"><?= nl2br($history->comment) ?></div>
                         </div>
                     </li>
                     <!-- END timeline item -->

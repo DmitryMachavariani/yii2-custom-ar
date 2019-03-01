@@ -294,6 +294,21 @@ class Tasks extends \yii\db\ActiveRecord
             $this->date_created = date('Y-m-d H:i:s');
         }
 
+        $changedAttributes = [];
+        $skippedAttributes = ['file', 'description'];
+        foreach ($this->oldAttributes as $key => $value)
+        {
+            if (in_array($key, $skippedAttributes)) {
+                continue;
+            }
+
+            if ($this->oldAttributes[$key] != $this->attributes[$key]) {
+                $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на ' . $this->attributes[$key];
+            }
+        }
+
+        History::create(History::TYPE_CHANGE_ATTRIBUTES, History::MODEL_TASKS, $this->id, implode("\n", $changedAttributes));
+
         $this->date_updated = date('Y-m-d H:i:s');
         $this->created_by = Yii::$app->user->id;
         if (empty($this->planned_start_date)) {
@@ -306,10 +321,21 @@ class Tasks extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this->status == self::STATUS_CLOSED) {
+            $this->real_end_date = date('Y-m-d');
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
     public function afterFind()
     {
         $column = ArrayHelper::getColumn($this->trackers, 'time');
         $this->tracked = array_sum($column);
+
+        $this->oldAttributes = $this->attributes;
 
         parent::afterFind();
     }

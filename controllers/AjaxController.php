@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\components\BaseController;
 use app\models\Files;
 use app\models\GanttForm;
-use app\models\History;
 use app\models\notifications\Notification;
 use app\models\Tasks;
 use app\models\Trackers;
@@ -63,7 +62,6 @@ class AjaxController extends BaseController
 
             $task->setStatus($status);
             $statusName = Tasks::getStatus($status);
-            History::create(History::TYPE_CHANGE_STATUS, History::MODEL_TASKS, $task->id);
 
             return ["msg" => "Статус изменен на {$statusName}", "type" => "success"];
         }
@@ -92,7 +90,6 @@ class AjaxController extends BaseController
 
             $task->setAssigned($userId);
             $userName = Users::find()->where(['id' => $userId])->one();
-            History::create(History::TYPE_CHANGE_ASSIGN_TO, History::MODEL_TASKS, $task->id);
 
             return ["msg" => "Исполнитель изменен на {$userName->username}", "type" => "success"];
         }

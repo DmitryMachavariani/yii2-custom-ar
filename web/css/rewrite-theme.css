@@ -30,3 +30,17 @@ ul.documents-list li {
 .list-members .form-control {
     height: 100%;
 }
+
+.error-page {
+    margin: 0 auto;
+}
+
+.error-page > .headline {
+    float: none;
+    text-align: center;
+}
+
+.error-page > .error-content {
+    margin-left: 0;
+    text-align: center;
+}

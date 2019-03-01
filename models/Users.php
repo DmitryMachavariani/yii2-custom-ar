@@ -24,6 +24,7 @@ class Users extends User
 {
     public $user_id;
     public $settingsModel;
+    public $repeatPassword;
 
     /** STATUSES */
     const STATUS_USER = 1;
@@ -36,9 +37,21 @@ class Users extends User
         self::STATUS_BANNED => 'Заблокированный'
     ];
 
+    const SCENARIO_UPDATE = 'update_users';
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_UPDATE => [],
+        ];
+    }
+
     public function rules()
     {
         return [
+            [['username', 'password', 'email', 'status'], 'required'],
+            ['password', 'safe'],
+            ['email', 'email'],
             [['status'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 65],
@@ -55,6 +68,7 @@ class Users extends User
             'id' => 'ID',
             'username' => 'Логин',
             'password' => 'Пароль',
+            'repeatPassword' => 'Повторите пароль',
             'email' => 'Email',
             'phone' => 'Телефон',
             'status' => 'Статус',
@@ -77,12 +91,22 @@ class Users extends User
         return $this->hasMany(Settings::class, ['user_id' => 'id']);
     }
 
+    /**
+     * @param bool $insert
+     *
+     * @return bool
+     * @throws \yii\base\Exception
+     */
     public function beforeSave($insert)
     {
         try {
             $this->phone = Helper::minimizePhone($this->phone);
         } catch (\Exception $e) {
 
+        }
+
+        if ($this->scenario == self::SCENARIO_UPDATE) {
+            $this->password = Yii::$app->security->generatePasswordHash($this->password);
         }
 
         return parent::beforeSave($insert);

@@ -4,11 +4,7 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\components\Bot\Curl;
-use app\components\notification\NotifyFactory;
-use app\models\notifications\Notification;
-use app\models\Projects;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Response;
 use app\models\LoginForm;
 
@@ -17,33 +13,18 @@ class SiteController extends BaseController
     public $defaultAction = 'login';
     public $enableCsrfValidation = false;
 
-    public function behaviors()
+    public function actionError()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
+        $this->layout = '@app/views/layouts/main-error';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-        ];
+        $exception = Yii::$app->errorHandler->exception;
+
+        $message = $exception->getMessage();
+        $code = Yii::$app->response->getStatusCode();
+
+        if ($exception !== null) {
+            return $this->render('error', compact('message', 'code'));
+        }
     }
 
     /**

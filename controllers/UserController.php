@@ -13,6 +13,20 @@ use yii\web\UploadedFile;
 
 class UserController extends BaseController
 {
+    public function behaviors()
+    {
+        $rule = [
+            'actions' => ['index', 'create', 'update'],
+            'allow' => true,
+            'roles' => [Users::STATUS_ADMIN]
+        ];
+
+        $parent = parent::behaviors();
+        array_unshift($parent['access']['rules'], $rule);
+
+        return $parent;
+    }
+
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
@@ -41,6 +55,10 @@ class UserController extends BaseController
             ->where(['u.id' => $id])
             ->withProfile()
             ->one();
+
+        /** @TODO проверить почему не заносится пароль из POST */
+        $model->setScenario(Users::SCENARIO_UPDATE);
+
         $profile = $model->profile;
 
         $userLoad = $model->load(\Yii::$app->request->post());
@@ -63,7 +81,6 @@ class UserController extends BaseController
             }
             $settingsModel->user_id = $model->id;
             if ($settingsModel->load(\Yii::$app->request->post())) {
-//                var_export($settingsModel->getAttributes()); die;
                 $settingsModel->saveData();
             }
 
@@ -125,6 +142,14 @@ class UserController extends BaseController
         return $this->render('form', compact('model', 'settingsModel', 'profile'));
     }
 
+    /**
+     * @param $id
+     *
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();

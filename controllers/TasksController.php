@@ -9,7 +9,6 @@ use app\models\Projects;
 use app\models\Tasks;
 use app\models\TasksSearch;
 use app\models\Users;
-use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;

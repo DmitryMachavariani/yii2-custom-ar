@@ -48,21 +48,23 @@ class TasksController extends BaseController
     public function actionMyTasks()
     {
         $projectId = null;
+        $myTasks = true;
 
         $searchModel = new TasksSearch();
         $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, null, true);
         $statuses = Tasks::STATUSES;
 
-        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));
+        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId', 'myTasks'));
     }
 
     public function actionTasks(int $projectId = null)
     {
+        $myTasks = false;
         $searchModel = new TasksSearch();
         $dataProvider = $searchModel->searchGrid(\Yii::$app->request->queryParams, $projectId, false);
         $statuses = Tasks::STATUSES;
 
-        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId'));
+        return $this->render('tasks', compact('dataProvider', 'searchModel', 'statuses', 'projectId', 'myTasks'));
     }
 
     /**

@@ -14,14 +14,19 @@ use yii\helpers\Url;
  * @var $this \yii\web\View
  */
 
-$this->title = 'Задачи';
+$this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId ? ' по проекту ' . \app\models\Projects::findOne($projectId) ->title : '');
 ?>
 
-<?= Html::a('Мои задачи', ['tasks/my-tasks'], ['class' => 'btn btn-success']) ?>&nbsp;
-<?= Html::a('Завести задачу', ['tasks/create', 'projectId' => $projectId], ['class' => 'btn btn-success']) ?>
+<h2><?=$this->title?></h2>
 
-<br>
-<br>
+<div class="margin-bottom">
+    <?php if ($myTasks): ?>
+        <?= Html::a('Все задачи', ['tasks/tasks'], ['class' => 'btn btn-success']) ?>&nbsp;
+    <?php else: ?>
+        <?= Html::a('Мои задачи', ['tasks/my-tasks'], ['class' => 'btn btn-success']) ?>&nbsp;
+    <?php endif; ?>
+    <?= Html::a('Завести задачу', ['tasks/create', 'projectId' => $projectId], ['class' => 'btn btn-success']) ?>
+</div>
 
 <div class="box">
     <div class="box-body table-responsive no-padding">

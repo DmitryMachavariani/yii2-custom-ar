@@ -23,13 +23,12 @@ $this->title = 'Проекты';
             'dataProvider' => $dataProvider,
             'columns' => [
                 [
-                    'attribute' => 'id',
+                    'attribute' => 'title',
                     'format' => 'raw',
                     'value' => function (Projects $model) {
-                        return Html::a($model->id, ['tasks/tasks', 'projectId' => $model->id]);
+                        return Html::a($model->title, ['tasks/tasks', 'projectId' => $model->id]);
                     }
                 ],
-                'title',
                 [
                      'header' => 'Прогресс',
                     'format' => 'raw',

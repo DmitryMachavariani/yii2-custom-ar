@@ -69,4 +69,36 @@ class ProjectsController extends BaseController
 
         return $this->render('form', compact('model', 'members'));
     }
+
+    /**
+     * @param $id
+     *
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+        \Yii::$app->session->setFlash('success', 'Запись успешно удалена');
+
+        return $this->redirect(\Yii::$app->request->getReferrer());
+    }
+
+    /**
+     * Finds the Actions model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Projects the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Projects::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
 }

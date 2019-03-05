@@ -41,9 +41,10 @@ class Users extends User
 
     public function scenarios()
     {
-        return [
+        $scenarios = parent::scenarios();
+        return ArrayHelper::merge($scenarios, [
             self::SCENARIO_UPDATE => [],
-        ];
+        ]);
     }
 
     public function rules()

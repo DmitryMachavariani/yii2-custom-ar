@@ -290,8 +290,18 @@ class Tasks extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
+        $this->date_updated = date('Y-m-d H:i:s');
+        $this->created_by = Yii::$app->user->id;
+        if (empty($this->planned_start_date)) {
+            $this->planned_start_date = $this->date_created;
+        }
+        if (empty($this->planned_end_date)) {
+            $this->planned_end_date = date('Y-m-d', strtotime($this->planned_start_date . ' + 1 days'));
+        }
+
         if ($this->isNewRecord) {
             $this->date_created = date('Y-m-d H:i:s');
+            return parent::beforeSave($insert);
         }
 
         $changedAttributes = [];
@@ -308,15 +318,6 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         History::create(History::TYPE_CHANGE_ATTRIBUTES, History::MODEL_TASKS, $this->id, implode("\n", $changedAttributes));
-
-        $this->date_updated = date('Y-m-d H:i:s');
-        $this->created_by = Yii::$app->user->id;
-        if (empty($this->planned_start_date)) {
-            $this->planned_start_date = $this->date_created;
-        }
-        if (empty($this->planned_end_date)) {
-            $this->planned_end_date = date('Y-m-d', strtotime($this->planned_start_date . ' + 1 days'));
-        }
 
         return parent::beforeSave($insert);
     }

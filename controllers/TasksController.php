@@ -95,7 +95,7 @@ class TasksController extends BaseController
                 'view' => 'new_task'
             ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно заведена');
-            return $this->refresh();
+            return $this->redirect(['tasks/task', 'taskId' => $model->id]);
         }
 
         return $this->render('form', compact('model', 'users', 'projects'));
@@ -126,7 +126,7 @@ class TasksController extends BaseController
                 'view' => 'edit_task'
             ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно обновлена');
-            return $this->redirect(['tasks/task', 'taskId' => $model->project_id]);
+            return $this->redirect(['tasks/task', 'taskId' => $model->id]);
         }
 
         return $this->render('form', compact('model', 'users', 'projects'));

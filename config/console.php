@@ -18,7 +18,7 @@ $config = [
     'components' => [
         'bot' => $bot,
         'authManager' => [
-            'class' => 'app\components\customDbManager',
+            'class' => 'app\components\CustomDbManager',
         ],
         'cache' => [
             'class' => yii\redis\Cache::class,

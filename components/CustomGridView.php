@@ -10,8 +10,4 @@ class CustomGridView extends GridView
     public $tableOptions = [
         'class' => 'table table-hover'
     ];
-
-    public $options = [
-        'tag' => false
-    ];
 }

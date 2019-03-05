@@ -18,7 +18,7 @@ $modalButtons = [
     Html::button('Сохранить изменения', ['class' => 'btn btn-primary pull-left', 'id' => 'save-changes-modal'])
 ];
 
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Url::to(['/favicon.ico'])]);
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Url::to(['/img/favicon.ico'])]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

@@ -37,17 +37,17 @@ $this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId
             [
                 'attribute' => 'title',
                 'format' => 'raw',
-                'filter' => false,
                 'value' => function (Tasks $task) {
                     return Html::a($task->title, ['tasks/task', 'taskId' => $task->id]);
                 }
             ],
             [
-                'attribute' => 'project.title',
+                'attribute' => 'projectTitle',
                 'format' => 'raw',
                 'value' => function (Tasks $task) {
                     return Html::a($task->project->title, ['tasks/tasks', 'projectId' => $task->project_id]);
-                }
+                },
+                'label' => 'Проект',
             ],
             [
                 'attribute' => 'status',

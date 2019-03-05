@@ -12,11 +12,14 @@ use yii\base\Model;
  */
 class TasksSearch extends Tasks
 {
+    public $projectTitle;
+
     public function rules()
     {
         return [
             [['id', 'project_id', 'status', 'priority', 'assigned_to', 'created_by', 'notify'], 'integer'],
             [['title', 'description', 'date_created', 'date_updated', 'project'], 'safe'],
+            [['projectTitle'], 'string', 'max' => 255],
             [['estimate'], 'number'],
         ];
     }
@@ -89,9 +92,9 @@ class TasksSearch extends Tasks
             'query' => $query,
         ]);
 
-        $dataProvider->sort->attributes['project'] = [
-            'asc' => ['projects.title' => SORT_ASC],
-            'desc' => ['projects.title' => SORT_DESC],
+        $dataProvider->sort->attributes['projectTitle'] = [
+            'asc' => ['p.title' => SORT_ASC],
+            'desc' => ['p.title' => SORT_DESC],
         ];
 
         $this->load($params);
@@ -104,21 +107,21 @@ class TasksSearch extends Tasks
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'project_id' => $this->project_id,
-            'status' => $this->status,
-            'priority' => $this->priority,
-            'assigned_to' => $this->assigned_to,
-            'created_by' => $this->created_by,
-            'estimate' => $this->estimate,
-            'notify' => $this->notify,
-            'date_created' => $this->date_created,
-            'date_updated' => $this->date_updated,
+            self::tableName() . '.id' => $this->id,
+            self::tableName() . '.project_id' => $this->project_id,
+            self::tableName() . '.status' => $this->status,
+            self::tableName() . '.priority' => $this->priority,
+            self::tableName() . '.assigned_to' => $this->assigned_to,
+            self::tableName() . '.created_by' => $this->created_by,
+            self::tableName() . '.estimate' => $this->estimate,
+            self::tableName() . '.notify' => $this->notify,
+            self::tableName() . '.date_created' => $this->date_created,
+            self::tableName() . '.date_updated' => $this->date_updated,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'projects.title', $this->project]);
+            ->andFilterWhere(['like', self::tableName() . '.description', $this->description])
+            ->andFilterWhere(['like', 'p.title', $this->projectTitle]);
 
         return $dataProvider;
     }

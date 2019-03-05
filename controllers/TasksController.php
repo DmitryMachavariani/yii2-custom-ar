@@ -91,7 +91,7 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
-            NotifyFactory::notifyUser($model->assigned_to, $model->id, [
+            NotifyFactory::notifyUser($model->getUsersToNotify(), $model->id, [
                 'view' => 'new_task'
             ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно заведена');
@@ -122,7 +122,7 @@ class TasksController extends BaseController
             if ($model->files) {
                 $model->prepareFile();
             }
-            NotifyFactory::notifyUser($model->assigned_to, $model->id, [
+            NotifyFactory::notifyUser($model->getUsersToNotify(), $model->id, [
                 'view' => 'edit_task'
             ]);
             \Yii::$app->session->setFlash('success', 'Задача успешно обновлена');
@@ -159,8 +159,9 @@ class TasksController extends BaseController
         $dataProvider = TasksSearch::search(\Yii::$app->request->get('q', null));
         $searchModel = new TasksSearch();
         $statuses = Tasks::STATUSES;
+        $myTasks = false;
 
-        return $this->render('tasks', compact('dataProvider', 'projectId', 'searchModel', 'statuses'));
+        return $this->render('tasks', compact('dataProvider', 'projectId', 'searchModel', 'statuses', 'myTasks'));
     }
 
     public function actionGantt()

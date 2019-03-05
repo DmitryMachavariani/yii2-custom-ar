@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\components\Bot\Curl;
+use app\models\Tasks;
 use Yii;
 use yii\web\Response;
 use app\models\LoginForm;

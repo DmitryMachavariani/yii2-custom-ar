@@ -3,8 +3,6 @@
 namespace app\models;
 
 use app\components\FileHelper;
-use app\models\notifications\Notification;
-use app\components\notification\NotifyFactory;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -34,6 +32,7 @@ use yii\web\UploadedFile;
  * @property Users $assigned
  * @property Users $created
  * @property History[] $history
+ * @property History $lastHistory
  * @property Files[] $attachments
  * @property Trackers[] $trackers
  */
@@ -305,9 +304,8 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         $changedAttributes = [];
-        $skippedAttributes = ['file', 'description'];
-        foreach ($this->oldAttributes as $key => $value)
-        {
+        $skippedAttributes = ['file', 'date_updated'];
+        foreach ($this->oldAttributes as $key => $value) {
             if (in_array($key, $skippedAttributes)) {
                 continue;
             }
@@ -364,5 +362,27 @@ class Tasks extends \yii\db\ActiveRecord
 
         History::create(History::TYPE_ADD_FILE, History::MODEL_TASKS, $this->id);
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsersToNotify()
+    {
+        return array_diff(array_unique([
+            $this->assigned_to,
+            $this->created_by,
+            $this->notify
+        ]), ([@Yii::$app->user->id ?? 0]));
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastHistory()
+    {
+        return $this->hasOne(History::class, ['model_id' => 'id'])
+            ->andOnCondition(['model_name' => 'Tasks'])
+            ->orderBy([History::tableName() . '.date' => SORT_DESC]);
     }
 }

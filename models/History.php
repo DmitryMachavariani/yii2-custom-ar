@@ -160,4 +160,9 @@ class History extends \yii\db\ActiveRecord
 
         return parent::beforeSave($insert);
     }
+
+    public function __toString()
+    {
+        return "Пользователь {$this->author->profile->fullName} " . date('d.m.Y H:i:s') . " {$this->comment}";
+    }
 }

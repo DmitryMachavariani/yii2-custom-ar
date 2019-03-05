@@ -35,7 +35,7 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
     protected $task;
 
     /**
-     * @param       $userId
+     * @param int|array $userId
      * @param null  $taskId
      * @param array $params
      * @param null  $message
@@ -46,29 +46,32 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
         $notifies = [
             self::create(Notification::TYPE_INSIDE)
         ];
-        $notifications = Users::findOne($userId)->getNotifications();
-        $task = $taskId ? Tasks::findOne($taskId) : null;
+        $userId = (is_array($userId) ? $userId : [$userId]);
+        foreach ($userId as $id) {
+            $notifications = Users::findOne($id)->getNotifications();
+            $task = $taskId ? Tasks::findOne($taskId) : null;
 
-        foreach ($notifications as $key => $value) {
-            switch ($key) {
-                case Settings::USE_TELEGRAM:
-                    $notifies[] = self::create(Notification::TYPE_TELEGRAM);
-                    break;
-                case Settings::USE_EMAIL:
-                    $notifies[] = self::create(Notification::TYPE_MAIL);
-                    break;
-                default:
-                    continue;
+            foreach ($notifications as $key => $value) {
+                switch ($key) {
+                    case Settings::USE_TELEGRAM:
+                        $notifies[] = self::create(Notification::TYPE_TELEGRAM);
+                        break;
+                    case Settings::USE_EMAIL:
+                        $notifies[] = self::create(Notification::TYPE_MAIL);
+                        break;
+                    default:
+                        continue;
+                    }
             }
-        }
 
-        foreach ($notifies as $notify) {
-            $notify->setUserId($userId)
-                ->setTaskId($taskId)
-                ->setMessage($message)
-                ->setParams($params)
-                ->setTask($task);
-            \Yii::$app->queue->push($notify);
+            foreach ($notifies as $notify) {
+                $notify->setUserId($id)
+                    ->setTaskId($taskId)
+                    ->setMessage($message)
+                    ->setParams($params)
+                    ->setTask($task);
+                \Yii::$app->queue->push($notify);
+            }
         }
     }
 

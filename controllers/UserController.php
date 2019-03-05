@@ -106,8 +106,8 @@ class UserController extends BaseController
         $userLoad = $model->load(\Yii::$app->request->post());
         $profileLoad = $profile->load(\Yii::$app->request->post());
 
-        $password = $model->generatePassword();
         if ($profileLoad && $userLoad && $model->save()) {
+            $password = $model->generatePassword();
             $profile->photo = UploadedFile::getInstance($profile, 'photo');
             $profile->user_id = $model->id;
 

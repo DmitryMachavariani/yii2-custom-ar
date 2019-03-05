@@ -17,7 +17,7 @@ $config = [
     ],
     'components' => [
         'authManager' => [
-            'class' => \app\components\customDbManager::class,
+            'class' => \app\components\CustomDbManager::class,
         ],
         'bot' => $bot,
         'request' => [

@@ -7,7 +7,7 @@ use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
 
-class customDbManager extends DbManager
+class CustomDbManager extends DbManager
 {
     /**
      * Populates an auth item with the data fetched from database.

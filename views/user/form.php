@@ -28,14 +28,14 @@ $this->title = 'Управление пользователем';
                 <?= $form->field($model, 'status')->dropDownList(
                     Users::STATUSES
                 ) ?>
-                <?= $form->field($model, 'formPassword') ?>
+                <?= $form->field($model, 'formPassword')->passwordInput() ?>
             </div>
             <div class="col-md-6">
                 <?= $form->field($profile, 'last_name') ?>
                 <?= $form->field($profile, 'first_name') ?>
                 <?= $form->field($profile, 'middle_name') ?>
                 <?= $form->field($profile, 'job') ?>
-                <?= $form->field($model, 'repeatPassword') ?>
+                <?= $form->field($model, 'repeatPassword')->passwordInput() ?>
             </div>
         </div>
     </div>

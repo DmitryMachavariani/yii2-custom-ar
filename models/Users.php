@@ -45,9 +45,9 @@ class Users extends User
     {
         return [
             [['password', 'formPassword', 'repeatPassword'], 'safe', 'on' => self::SCENARIO_UPDATE],
-            [['username', 'password', 'email', 'status', 'formPassword'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['username', 'password', 'email', 'status'], 'required', 'on' => self::SCENARIO_UPDATE],
 
-            [['username', 'password', 'email', 'status', 'formPassword'], 'required'],
+            [['username', 'password', 'email', 'status'], 'required'],
             ['formPassword', 'compare', 'compareAttribute' => 'repeatPassword'],
 
             ['email', 'email'],
@@ -105,7 +105,7 @@ class Users extends User
 
         }
 
-        if ($this->scenario == self::SCENARIO_UPDATE) {
+        if ($this->scenario == self::SCENARIO_UPDATE && !empty($this->formPassword)) {
             $this->password = Yii::$app->security->generatePasswordHash($this->formPassword);
         }
 

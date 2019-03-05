@@ -45,18 +45,21 @@ $this->title = $model->isNewRecord ? 'Создать новую задачу' : 
                     'todayHighlight' => true
                 ]
             ]) ?>
+
             <?= $form->field($model, 'planned_end_date')->widget(DatePicker::class, [
                 'pluginOptions' => [
                     'format' => 'yyyy-mm-dd',
                     'todayHighlight' => true
                 ]
             ]) ?>
+
             <?= $form->field($model, 'real_start_date')->widget(DatePicker::class, [
                 'pluginOptions' => [
                     'format' => 'yyyy-mm-dd',
                     'todayHighlight' => true
                 ]
             ]) ?>
+
             <?= $form->field($model, 'real_end_date')->widget(DatePicker::class, [
                 'pluginOptions' => [
                     'format' => 'yyyy-mm-dd',

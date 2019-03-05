@@ -26,6 +26,10 @@ class customDbManager extends DbManager
             'name' => $row['name'],
             'type' => $row['type'],
             'description' => $row['description'],
+            'ruleName' => $row['rule_name'] ?: null,
+            'data' => $data,
+            'createdAt' => $row['created_at'],
+            'updatedAt' => $row['updated_at'],
         ]);
     }
 

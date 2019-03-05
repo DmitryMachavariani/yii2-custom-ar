@@ -28,7 +28,7 @@ $this->title = 'Управление пользователем';
                 <?= $form->field($model, 'status')->dropDownList(
                     Users::STATUSES
                 ) ?>
-                <?= $form->field($model, 'password') ?>
+                <?= $form->field($model, 'formPassword') ?>
             </div>
             <div class="col-md-6">
                 <?= $form->field($profile, 'last_name') ?>

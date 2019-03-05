@@ -24,6 +24,7 @@ class Users extends User
 {
     public $user_id;
     public $settingsModel;
+    public $formPassword;
     public $repeatPassword;
 
     /** STATUSES */
@@ -39,19 +40,16 @@ class Users extends User
 
     const SCENARIO_UPDATE = 'update_users';
 
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-        return ArrayHelper::merge($scenarios, [
-            self::SCENARIO_UPDATE => [],
-        ]);
-    }
 
     public function rules()
     {
         return [
-            [['username', 'password', 'email', 'status'], 'required'],
-            ['password', 'safe'],
+            [['password', 'formPassword', 'repeatPassword'], 'safe', 'on' => self::SCENARIO_UPDATE],
+            [['username', 'password', 'email', 'status', 'formPassword'], 'required', 'on' => self::SCENARIO_UPDATE],
+
+            [['username', 'password', 'email', 'status', 'formPassword'], 'required'],
+            ['formPassword', 'compare', 'compareAttribute' => 'repeatPassword'],
+
             ['email', 'email'],
             [['status'], 'integer'],
             [['username'], 'string', 'max' => 50],
@@ -69,6 +67,7 @@ class Users extends User
             'id' => 'ID',
             'username' => 'Логин',
             'password' => 'Пароль',
+            'formPassword' => 'Пароль',
             'repeatPassword' => 'Повторите пароль',
             'email' => 'Email',
             'phone' => 'Телефон',
@@ -107,7 +106,7 @@ class Users extends User
         }
 
         if ($this->scenario == self::SCENARIO_UPDATE) {
-            $this->password = Yii::$app->security->generatePasswordHash($this->password);
+            $this->password = Yii::$app->security->generatePasswordHash($this->formPassword);
         }
 
         return parent::beforeSave($insert);

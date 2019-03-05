@@ -105,10 +105,15 @@ class TasksController extends BaseController
      * @param int $taskId
      *
      * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
      */
     public function actionUpdate(int $taskId)
     {
         $model = Tasks::find()->where(['id' => $taskId])->one();
+
+        if (!$model) {
+            throw new NotFoundHttpException("Задача не найдена");
+        }
 
         $userModel = Users::find()
             ->withProfile()

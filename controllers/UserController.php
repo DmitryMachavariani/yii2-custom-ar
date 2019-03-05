@@ -48,6 +48,7 @@ class UserController extends BaseController
         if ($id === null) {
             $id = \Yii::$app->user->id;
         }
+
         $settingsModel = new Settings();
 
         $model = Users::find()
@@ -56,7 +57,6 @@ class UserController extends BaseController
             ->withProfile()
             ->one();
 
-        /** @TODO проверить почему не заносится пароль из POST */
         $model->setScenario(Users::SCENARIO_UPDATE);
 
         $profile = $model->profile;

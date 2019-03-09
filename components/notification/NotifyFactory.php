@@ -48,6 +48,9 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
         ];
         $userId = (is_array($userId) ? $userId : [$userId]);
         foreach ($userId as $id) {
+            if (empty($id)) {
+                continue;
+            }
             $notifications = Users::findOne($id)->getNotifications();
             $task = $taskId ? Tasks::findOne($taskId) : null;
 

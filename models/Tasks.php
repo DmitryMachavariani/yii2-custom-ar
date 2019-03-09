@@ -358,7 +358,7 @@ class Tasks extends \yii\db\ActiveRecord
 
             $folder = mb_strtolower(Yii::getAlias('@uploads') . '/' . $filesModel->model_name . '/' . $this->id . '/');
             $fileHelper = new FileHelper($uploadedFile->tempName, $folder);
-            $fileHelper->saveAs($folder . '/' . $filesModel->name);
+            $fileHelper->setBaseFolder(Yii::getAlias('@uploads'))->saveAs($folder . '/' . $filesModel->name);
         }
 
         History::create(History::TYPE_ADD_FILE, History::MODEL_TASKS, $this->id);

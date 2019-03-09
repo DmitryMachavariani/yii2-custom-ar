@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $bot = require __DIR__ . '/bot.php';
 $mailer = require __DIR__ . '/mailer.php';
+$storage = require __DIR__ . '/yadisk.php';
 
 $config = [
     'id' => 'basic',
@@ -78,6 +79,7 @@ $config = [
             'redis' => 'redis', // Redis connection component or its config
             'channel' => 'queue', // Queue channel key
         ],
+        'storage' => $storage
     ],
     'params' => $params,
 ];

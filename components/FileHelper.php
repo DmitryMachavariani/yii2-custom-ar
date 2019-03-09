@@ -28,6 +28,11 @@ class FileHelper extends \yii\helpers\FileHelper
     public $folderName;
 
     /**
+     * @var string
+     */
+    public $baseFolder = '/';
+
+    /**
      * FileHelper constructor.
      *
      * @param      $filename
@@ -50,6 +55,18 @@ class FileHelper extends \yii\helpers\FileHelper
             $this->tempName = $filename;
             $this->name = $filename;
         }
+    }
+
+    /**
+     * @param $folder
+     *
+     * @return $this
+     */
+    public function setBaseFolder($folder)
+    {
+        $this->baseFolder = $folder;
+
+        return $this;
     }
 
     /**
@@ -172,19 +189,49 @@ class FileHelper extends \yii\helpers\FileHelper
      * @return bool true whether the file is saved successfully
      * @see error
      */
-    public function saveAs($file, $deleteTempFile = false)
+    public function saveAs($file = null, $deleteTempFile = true)
     {
-        $result = copy($this->tempName, $file);
+        if (empty($file)) {
+            $file = $this->getFilePath() . $this->getJustFilename();
+        }
+        if (!file_exists($file)) {
+            copy($this->tempName, $file);
+            $this->name = $file;
+        }
+        $result = \Yii::$app->storage->save($file);
 
         if (!$result) {
             return false;
         }
         $this->name = $file;
         if ($deleteTempFile) {
-            return @unlink($this->tempName);
+            return @unlink($file);
         }
 
         return $result;
+    }
+
+    /**
+     * @param null $file
+     *
+     * @return bool|string|null
+     */
+    public function downloadFile($file = null)
+    {
+        if (is_null($file)) {
+            $file = $this->getFilePath() . '/' . $this->getJustFilename();
+        }
+        $result = \Yii::$app->storage->download($file);
+
+        return ($result ? $file : false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelativePath()
+    {
+        return trim(preg_replace('/'.preg_quote($this->baseFolder, '/').'(.+)/isu', "$1", $this->getFilePath() . '/' . $this->getJustFilename()), '/');
     }
 
     /**

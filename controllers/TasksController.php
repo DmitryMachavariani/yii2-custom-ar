@@ -11,6 +11,7 @@ use app\models\TasksSearch;
 use app\models\Users;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -140,9 +141,9 @@ class TasksController extends BaseController
     /**
      * @param $file_id
      *
-     * @return \yii\console\Response|Response
+     * @return bool
+     * @throws HttpException
      * @throws NotFoundHttpException
-     * @throws \yii\base\InvalidConfigException
      */
     public function actionDownload($file_id)
     {
@@ -150,12 +151,13 @@ class TasksController extends BaseController
         if (!$file) {
             throw new NotFoundHttpException('Файл не найден');
         }
-        $mimeType = $file->getMimeType();
         $response = \Yii::$app->response;
         $response->format = Response::FORMAT_RAW;
-        $response->getHeaders()->set('Content-Type', "{$mimeType}; charset=utf-8");
+        if (!($result = $file->getFile())) {
+            throw new HttpException(400, 'Проблема с файлом');
+        }
 
-        return \Yii::$app->response->sendFile($file->getFullPath());
+        return $result;
     }
 
     public function actionSearch()

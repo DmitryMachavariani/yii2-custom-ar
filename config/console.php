@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $bot = require __DIR__ . '/bot.php';
 $mailer = require __DIR__ . '/mailer.php';
+$storage = require __DIR__ . '/yadisk.php';
 
 $config = [
     'id' => 'basic-console',
@@ -47,6 +48,7 @@ $config = [
             'channel' => 'queue', // Queue channel key
         ],
         'db' => $db,
+        'storage' => $storage
     ],
     'params' => $params,
     /*

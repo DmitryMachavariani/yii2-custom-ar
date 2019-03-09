@@ -28,7 +28,8 @@
         "botman/driver-telegram": "^1.5",
         "doctrine/cache": "^1.8",
         "kartik-v/yii2-widget-datepicker": "^1.4",
-        "la-haute-societe/yii2-save-relations-behavior": "^1.7"
+        "la-haute-societe/yii2-save-relations-behavior": "^1.7",
+        "arhitector/yandex": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

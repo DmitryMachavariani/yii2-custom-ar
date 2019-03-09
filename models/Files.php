@@ -3,7 +3,9 @@
 namespace app\models;
 
 use app\components\FileHelper;
+use Arhitector\Yandex\Client\Exception\NotFoundException;
 use Yii;
+use yii\web\HttpException;
 
 /**
  * This is the model class for table "files".
@@ -106,14 +108,23 @@ class Files extends \yii\db\ActiveRecord
         return '/tasks/download?file_id=' . $this->id;
     }
 
-    public function afterDelete()
+    /**
+     * @return false|int
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function delete()
     {
         if ($this->name) {
-            $file = new FileHelper(\Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath() . '/' . $this->name);
-            $file->delete();
+            try {
+                Yii::$app->storage->delete(\Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath() . $this->name);
+            } catch (NotFoundException $e) {
+
+            }
+
         }
 
-        return parent::afterDelete();
+        return parent::delete();
     }
 
     /**
@@ -125,6 +136,23 @@ class Files extends \yii\db\ActiveRecord
         $fHelper = new FileHelper($this->name, Yii::getAlias('@uploads') . '/' . $this->getRelativeFilePath());
 
         return $fHelper->getMime();
+    }
+
+    /**
+     * @return \yii\web\Response|bool
+     * @throws HttpException
+     */
+    public function getFile()
+    {
+        $file = $this->getFullPath();
+        $result = Yii::$app->storage->download($file);
+        if (!$result) {
+            throw new HttpException(404, 'Удаленный Файл не найден');
+        }
+        $result = \Yii::$app->response->sendFile($file);
+        unlink($file);
+
+        return $result;
     }
 
     /**

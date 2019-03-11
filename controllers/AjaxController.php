@@ -167,10 +167,11 @@ class AjaxController extends BaseController
         }
         $searchModel = new GanttForm();
         $params = \Yii::$app->request->queryParams;
-        $searchModel->searchTasks($params);
+        $searchModel->searchTasks($params, \Yii::$app->request->get('page', 1));
         list($data, $links) = $searchModel->formatTasks();
+        $pagination = $searchModel->paginationData;
 
-        return compact('data', 'links');
+        return compact('data', 'links', 'pagination');
     }
 
     /**

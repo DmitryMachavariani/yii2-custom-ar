@@ -17,10 +17,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Диаграмма ганта', 'u
         <label><input type="radio" name="scale" value="year" class="form-controls" />Год</label>
     </div>
     <div id="gantt-wrapper" class="margin-bottom"></div>
+    <button id="gantt-more" class="btn btn-primary">Загрузить еще</button>
+    <input id="gantt-current-page" type="hidden" value="1"/>
     <button id="zoom-to-fit" onclick="toggleMode(this)" class="btn btn-primary">Масштаб</button>
 </div>
 <div id="loader" style="display: none">
     <img src="/img/loader.gif" />
 </div>
-<!--<input type="hidden" id="current-user-id" value="--><?//=(!\Yii::$app->user->identity-> ? \Yii::$app->user->id : '')?><!--"/>-->
-

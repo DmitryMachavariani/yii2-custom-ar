@@ -23,10 +23,31 @@ function loaderHide()
 function loadGantt(url)
 {
     loaderShow();
-    gantt.load(urlPart + url, 'json', function () {
+    var page = $('#gantt-current-page').val();
+    $.get(urlPart + url + '?page=' + page, function (data) {
+        if (!data.pagination.nextPage) {
+            pagingHide();
+        } else {
+            pagingShow();
+            $('#gantt-current-page').val(data.pagination.nextPage)
+        }
+        gantt.parse({
+            data: data.data,
+            links: data.links
+        });
         loaderHide();
+        setMarker();
     });
-    setMarker();
+}
+
+function pagingShow()
+{
+    $('#gantt-more').show();
+}
+
+function pagingHide()
+{
+    $('#gantt-more').hide();
 }
 
 function init()
@@ -41,13 +62,6 @@ function init()
     gantt.config.drag_links = false;
     gantt.config.show_progress = false;
 
-/*    $('<a />').attr({
-        'href': '#',
-        'class': 'btn btn-success',
-        'id': 'fullscreen'
-    }).css({
-        'position': 'absolute'
-    }).html('<span class="glyphicon glyphicon-resize-full"></span>').appendTo($('#wrapper'));*/
     getTasks();
     loadGantt('tasks');
 }
@@ -445,6 +459,9 @@ var scaleConfigs = [
 
 $(document).ready(function () {
     init();
+    $('#gantt-more').click(function () {
+        loadGantt('tasks');
+    });
     $('body').on('click', '#fullscreen', function () {
         if (!gantt.getState().fullscreen) {
             gantt.expand();

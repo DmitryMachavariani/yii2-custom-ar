@@ -2,10 +2,10 @@
 
 namespace app\models;
 
+use app\components\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class GanttForm.
@@ -19,6 +19,8 @@ class GanttForm extends Model
     const FILTER_TYPE_DEPARTMENT = 3;
     const FILTER_TYPE_FIXTURE = 4;
     const FILTER_TYPE_CITY = 5;
+
+    const LIMIT = 30;
 
     /**
      * @var Projects
@@ -36,6 +38,11 @@ class GanttForm extends Model
     public $dataProvider;
 
     /**
+     * @var array
+     */
+    public $paginationData;
+
+    /**
      * @return array
      */
     public static function getFilterTypes()
@@ -50,11 +57,12 @@ class GanttForm extends Model
     }
 
     /**
-     * @param $params
+     * @param     $params
+     * @param int $page
      *
      * @return ActiveDataProvider
      */
-    public function searchTasks($params)
+    public function searchTasks($params, $page = 1)
     {
         $query = Tasks::find();
 
@@ -85,12 +93,24 @@ class GanttForm extends Model
             'real_end_date' => $model->real_end_date,
         ]);
         $query->orderBy([
+            'project_id' => SORT_ASC,
             'date_created' => SORT_ASC
         ]);
 
         $query->andFilterWhere(['like', 'title', $model->title])
             ->andFilterWhere(['like', 'description', $model->description]);
         $this->dataProvider = $dataProvider;
+
+        $currentLimit = self::LIMIT;
+        $currentOffset = ($page - 1) * self::LIMIT;
+
+        $this->paginationData = Helper::getLimitAndOffset(
+            $dataProvider->getTotalCount(),
+            $currentOffset,
+            $currentLimit
+        );
+        $query->limit($currentLimit);
+        $query->offset($currentOffset);
 
         return $dataProvider;
     }
@@ -119,6 +139,7 @@ class GanttForm extends Model
                     'duration' => $dates['duration'],
                     'progress' => 0,
                     'open' => false,
+                    'type' => 'project'
                 ];
                 $data[] = $objectData;
             }
@@ -126,12 +147,13 @@ class GanttForm extends Model
 
             $data[] = [
                 'id' => $task->id,
-                'text' => "{$task->title} {$task->id}",
+                'text' => "{$task->title}",
                 'start_date' => $task->planned_start_date,
                 'duration' => $totalDuration,
                 'progress' => 0,
                 'parent' => 'ob_' . $project->id,
                 'open' => true,
+                'type' => 'task',
                 'real_start_date' => $task->real_start_date ?? false,
                 'real_end_date' => $task->real_end_date ?? false,
             ];

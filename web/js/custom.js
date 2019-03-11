@@ -241,4 +241,13 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('.toggle-label').click(function () {
+        var parent = $(this).parent();
+        if (parent.hasClass('hidden-toggle')) {
+            parent.removeClass('hidden-toggle');
+        } else {
+            parent.addClass('hidden-toggle');
+        }
+    })
 });

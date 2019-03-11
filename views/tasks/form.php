@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 use dosamigos\ckeditor\CKEditor;
 use kartik\date\DatePicker;
+use \yii\helpers\ArrayHelper;
 
 /**
  * @var $model \app\models\Tasks
@@ -14,6 +15,10 @@ use kartik\date\DatePicker;
  */
 
 $this->title = $model->isNewRecord ? 'Создать новую задачу' : 'Обновить задачу';
+$classes = [
+    'form-group',
+    'field-tasks-description',
+];
 ?>
 
 <h2><?=$this->title?></h2>
@@ -21,6 +26,25 @@ $this->title = $model->isNewRecord ? 'Создать новую задачу' : 
 <?php $form = ActiveForm::begin() ?>
 
 <?= $form->field($model, 'title') ?>
+
+<?php if ($model->isNewRecord) {
+    $options = [
+        'class' => $classes
+    ];
+} else {
+    $options = [
+        'class' => ArrayHelper::merge($classes, ['hidden-toggle'])
+    ];
+?>
+
+<?php } ?>
+<?= $form->field($model, 'description', [
+        'options' => $options,
+        'labelOptions' => [ 'class' => 'toggle-label']
+])->widget(CKEditor::class, [
+    'options' => ['rows' => 6],
+    'preset' => 'basic'
+]) ?>
 
 <div class="container-clear">
     <div class="raw">
@@ -69,11 +93,6 @@ $this->title = $model->isNewRecord ? 'Создать новую задачу' : 
         </div>
     </div>
 </div>
-
-<?= $form->field($model, 'description')->widget(CKEditor::class, [
-    'options' => ['rows' => 6],
-    'preset' => 'basic'
-]) ?>
 
 <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 

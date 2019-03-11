@@ -44,3 +44,12 @@ ul.documents-list li {
     margin-left: 0;
     text-align: center;
 }
+
+.hidden-toggle div {
+    display: none;
+}
+
+.toggle-label:hover {
+    cursor: pointer;
+    color: blue;
+}

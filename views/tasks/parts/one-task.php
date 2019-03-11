@@ -102,4 +102,11 @@ $this->title = "Задача: {$model->title}";
             <a href="<?= Url::to(['tasks/update', 'taskId' => $model->id]) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить файлы</a>
         </div>
     </div>
+    <div class="margin-bottom">
+        <?php if (!empty($model->comments)): ?>
+            <?=$this->render('comments-list', compact('model'));?>
+        <?php else : ?>
+
+        <?php endif; ?>
+    </div>
 </section>

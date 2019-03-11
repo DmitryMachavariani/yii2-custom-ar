@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use app\components\BaseController;
+use app\components\notification\NotifyFactory;
 use app\models\Files;
 use app\models\GanttForm;
 use app\models\notifications\Notification;
+use app\models\TaskComment;
 use app\models\Tasks;
 use app\models\Trackers;
 use app\models\Users;
@@ -213,5 +215,28 @@ class AjaxController extends BaseController
         }
 
         return ['type' => 'danger', 'msg' => 'Возникли ошибки.'];
+    }
+
+    public function actionAddComment($commentId = null)
+    {
+        $model = ($commentId ? TaskComment::findOne($commentId) : new TaskComment());
+        $model->load(\Yii::$app->request->post());
+        if (!$model->validate()) {
+            return [
+                'status' => 0,
+                'message' => implode(PHP_EOL, $model->getErrors())
+            ];
+        }
+        $model->save();
+        NotifyFactory::notifyUser(
+            $model->task->getUsersToNotify(),
+            $model->task->id,
+            [
+                'view' => 'new-comment',
+                'comment' => $model->text
+            ]
+        );
+
+        return ['status' => 1];
     }
 }

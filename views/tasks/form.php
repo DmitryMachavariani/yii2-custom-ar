@@ -9,6 +9,7 @@ use \yii\helpers\ArrayHelper;
 
 /**
  * @var $model \app\models\Tasks
+ * @var $commentModel \app\models\TaskComment
  * @var $users array
  * @var $projects array
  * @var $this \yii\web\View
@@ -97,3 +98,5 @@ $classes = [
 <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 
 <?php ActiveForm::end() ?>
+
+<?=$this->render('parts/comment-form', compact('model', 'commentModel'));?>

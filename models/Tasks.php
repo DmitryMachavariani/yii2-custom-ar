@@ -35,6 +35,7 @@ use yii\web\UploadedFile;
  * @property History $lastHistory
  * @property Files[] $attachments
  * @property Trackers[] $trackers
+ * @property TaskComment[] $comments
  */
 class Tasks extends \yii\db\ActiveRecord
 {
@@ -116,6 +117,14 @@ class Tasks extends \yii\db\ActiveRecord
             'real_end_date' => 'Факт. дата окончания',
             'files' => 'Файлы',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(TaskComment::class, ['task_id' => 'id']);
     }
 
     /**

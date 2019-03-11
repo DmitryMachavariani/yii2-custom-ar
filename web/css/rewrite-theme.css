@@ -53,3 +53,7 @@ ul.documents-list li {
     cursor: pointer;
     color: blue;
 }
+
+.comments.timeline::before {
+    background: none;
+}

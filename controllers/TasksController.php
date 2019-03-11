@@ -6,6 +6,7 @@ use app\components\BaseController;
 use app\components\notification\NotifyFactory;
 use app\models\Files;
 use app\models\Projects;
+use app\models\TaskComment;
 use app\models\Tasks;
 use app\models\TasksSearch;
 use app\models\Users;
@@ -75,6 +76,7 @@ class TasksController extends BaseController
     public function actionCreate(int $projectId = null)
     {
         $model = new Tasks();
+        $commentModel = new TaskComment();
 
         $userModel = Users::find()
             ->withProfile()
@@ -99,7 +101,7 @@ class TasksController extends BaseController
             return $this->redirect(['tasks/task', 'taskId' => $model->id]);
         }
 
-        return $this->render('form', compact('model', 'users', 'projects'));
+        return $this->render('form', compact('model', 'users', 'projects', 'commentModel'));
     }
 
     /**
@@ -111,6 +113,7 @@ class TasksController extends BaseController
     public function actionUpdate(int $taskId)
     {
         $model = Tasks::find()->where(['id' => $taskId])->one();
+        $commentModel = new TaskComment();
 
         if (!$model) {
             throw new NotFoundHttpException("Задача не найдена");
@@ -135,7 +138,7 @@ class TasksController extends BaseController
             return $this->redirect(['tasks/task', 'taskId' => $model->id]);
         }
 
-        return $this->render('form', compact('model', 'users', 'projects'));
+        return $this->render('form', compact('model', 'users', 'projects', 'commentModel'));
     }
 
     /**

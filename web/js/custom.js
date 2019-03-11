@@ -249,5 +249,27 @@ $(document).ready(function () {
         } else {
             parent.addClass('hidden-toggle');
         }
+    });
+
+    $('#save-comment-form').submit(function () {
+        var self = $(this);
+        var data = {
+            TaskComment: {
+                text: self.find('#taskcomment-text').val(),
+                author_id: self.find('#taskcomment-author_id').val(),
+                task_id: self.find('#taskcomment-task_id').val()
+            }
+        };
+        $.post(self.attr('action'), data, function (data) {
+            if (data.status != 1) {
+                alert(data.message);
+            } else {
+                alert('Комментарий добавлен')
+            }
+            return false;
+        });
+
+        console.log(data);
+        return false;
     })
 });

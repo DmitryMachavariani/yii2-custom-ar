@@ -57,8 +57,8 @@ class Tasks extends \yii\db\ActiveRecord
     const PRIORITY_HARD = 2;
 
     const PRIORITIES = [
-        self::PRIORITY_LOW => 'Низкий',
         self::PRIORITY_NORMAL => 'Нормальный',
+        self::PRIORITY_LOW => 'Низкий',
         self::PRIORITY_HARD => 'Высокий'
     ];
 

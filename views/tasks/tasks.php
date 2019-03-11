@@ -14,7 +14,7 @@ use yii\helpers\Url;
  * @var $this \yii\web\View
  */
 
-$this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId ? ' по проекту ' . \app\models\Projects::findOne($projectId) ->title : '');
+$this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId ? ' по проекту ' . \app\models\Projects::findOne($projectId)->title : '');
 ?>
 
 <h2><?=$this->title?></h2>
@@ -51,7 +51,7 @@ $this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId
             ],
             [
                 'attribute' => 'status',
-                'filter' => $statuses,
+                'filter' => Html::activeDropDownList($searchModel, 'status', $statuses, ['prompt' => 'Все открытые', 'class' => 'form-control']),
                 'value' => function (Tasks $task) {
                     return Tasks::getStatus($task->status);
                 }
@@ -61,7 +61,8 @@ $this->title = ($myTasks ? 'Мои задачи' : 'Задачи') . ($projectId
                 'format' => 'raw',
                 'value' => function (Tasks $task) {
                     return Tasks::getPriorityColored($task->priority);
-                }
+                },
+                'filter' => Tasks::PRIORITIES
             ],
             [
                 'attribute' => 'estimate',

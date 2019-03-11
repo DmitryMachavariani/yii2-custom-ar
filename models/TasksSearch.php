@@ -12,6 +12,16 @@ use yii\base\Model;
  */
 class TasksSearch extends Tasks
 {
+    const OPEN_STATUSES = [
+        self::STATUS_NEW,
+        self::STATUS_IN_PROGRESS,
+        self::STATUS_FEEDBACK,
+        self::STATUS_FINISHED,
+    ];
+
+    /**
+     * @var string
+     */
     public $projectTitle;
 
     public function rules()
@@ -100,16 +110,16 @@ class TasksSearch extends Tasks
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
+
+        $status = $this->status ? $this->status : self::OPEN_STATUSES;
 
         // grid filtering conditions
         $query->andFilterWhere([
             self::tableName() . '.id' => $this->id,
             self::tableName() . '.project_id' => $this->project_id,
-            self::tableName() . '.status' => $this->status,
+            self::tableName() . '.status' => $status,
             self::tableName() . '.priority' => $this->priority,
             self::tableName() . '.assigned_to' => $this->assigned_to,
             self::tableName() . '.created_by' => $this->created_by,

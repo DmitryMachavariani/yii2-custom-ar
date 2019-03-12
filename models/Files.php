@@ -105,7 +105,7 @@ class Files extends \yii\db\ActiveRecord
      */
     public function getInternalFileUrl()
     {
-        return '/tasks/download?file_id=' . $this->id;
+        return '/tasks/view-file?file_id=' . $this->id;
     }
 
     /**
@@ -139,20 +139,27 @@ class Files extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param bool $download
+     *
      * @return \yii\web\Response|bool
      * @throws HttpException
+     * @throws \yii\base\InvalidConfigException
      */
-    public function getFile()
+    public function getFile($download = true)
     {
         $file = $this->getFullPath();
         $result = Yii::$app->storage->download($file);
         if (!$result) {
             throw new HttpException(404, 'Удаленный Файл не найден');
         }
-        $result = \Yii::$app->response->sendFile($file);
-        unlink($file);
+        if ($download) {
+            \Yii::$app->response->sendFile($file);
+            unlink($file);
 
-        return $result;
+            return $result;
+        }
+        header('Content-Type: ' . FileHelper::getMimeType($file));
+        readfile($file); die;
     }
 
     /**

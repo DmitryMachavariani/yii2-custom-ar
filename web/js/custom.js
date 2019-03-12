@@ -287,10 +287,10 @@ $(document).ready(function () {
     $('body').on('click', '.js-insert-files', function () {
         var val = $(this).parent().find('#js-select-file').val();
         var name = $(this).parent().find('#js-select-file option:selected').text();
-        console.log(name);
         var text = " [file id=" + val + " " + "name=" + name + "] ";
         var editorInstance = CKEDITOR.instances['taskcomment-text'];
         editorInstance.insertHtml( text );
+        $('#modal').modal('hide');
     });
 
     $('.check-all').change(function() {

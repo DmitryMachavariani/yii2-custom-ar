@@ -147,6 +147,7 @@ class TasksController extends BaseController
      * @return bool
      * @throws HttpException
      * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionDownload($file_id)
     {
@@ -157,6 +158,29 @@ class TasksController extends BaseController
         $response = \Yii::$app->response;
         $response->format = Response::FORMAT_RAW;
         if (!($result = $file->getFile())) {
+            throw new HttpException(400, 'Проблема с файлом');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $file_id
+     *
+     * @return bool|Response
+     * @throws HttpException
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionViewFile($file_id)
+    {
+        $file = Files::findOne($file_id);
+        if (!$file) {
+            throw new NotFoundHttpException('Файл не найден');
+        }
+        $response = \Yii::$app->response;
+        $response->format = Response::FORMAT_RAW;
+        if (!($result = $file->getFile(false))) {
             throw new HttpException(400, 'Проблема с файлом');
         }
 

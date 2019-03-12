@@ -29,6 +29,7 @@ $this->title = "Задача: {$model->title}";
     <!-- info row -->
     <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
+            Проект <a href="/tasks/tasks?projectId=<?=$model->project_id?>"><strong><?= $model->project->title ?></strong></a><br>
             ID <strong><?= $model->id ?></strong><br>
             Создал <strong><?= $model->created->profile->fullName ?></strong><br>
             Статус <strong><?= Tasks::getStatus($model->status) ?></strong> <a href="#" id="change-status" class="fa fa-edit text-blue" data-id="<?= $model->id ?>"></a><br>
@@ -93,6 +94,7 @@ $this->title = "Задача: {$model->title}";
                         <li>
                             <span class="glyphicon glyphicon-file"></span>
                             <a target="_blank" href="<?= $file->getInternalFileUrl() ?>"><?= $file->name ?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
+                            <a href="<?= Url::to(['tasks/download', 'file' => $file->id]) ?>"><span class="glyphicon glyphicon-file"></span></a>
                             <a href="<?= Url::to(['ajax/remove-file', 'file' => $file->id]) ?>" class="js-remove-document"><span class="glyphicon glyphicon-remove"></span></a>
                         </li>
                     <?php endforeach; ?>

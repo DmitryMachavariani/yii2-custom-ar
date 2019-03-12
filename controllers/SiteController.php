@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\components\Bot\Curl;
-use app\models\Tasks;
+use app\models\SendMessageForm;
+use app\models\User;
 use Yii;
 use yii\web\Response;
 use app\models\LoginForm;
@@ -85,6 +86,19 @@ class SiteController extends BaseController
 
         $data = json_decode($input, 1);
         Yii::$app->bot->run($data);
+    }
+
+    public function actionSendMessage()
+    {
+        $users = User::find()->all();
+        $model = new SendMessageForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->send()) {
+            Yii::$app->session->setFlash('success', 'Ok');
+            return $this->refresh();
+        }
+
+        return $this->render('send-message', compact('model', 'users'));
     }
 
     public function actionTest()

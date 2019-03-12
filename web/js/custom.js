@@ -292,4 +292,12 @@ $(document).ready(function () {
         var editorInstance = CKEDITOR.instances['taskcomment-text'];
         editorInstance.insertHtml( text );
     });
+
+    $('.check-all').change(function() {
+        var selector = $(this).is(':checked') ? ':not(:checked)' : ':checked';
+
+        $('#sendmessageform-userids input[type="checkbox"]' + selector).each(function() {
+            $(this).trigger('click');
+        });
+    });
 });

@@ -271,5 +271,25 @@ $(document).ready(function () {
 
         console.log(data);
         return false;
-    })
+    });
+
+    $('body').on('click', '.js-ajax-link', function (e) {
+        var url = $(this).attr('href');
+
+        $.get(url, function (data) {
+            $('#mymodal').html(data);
+            $('#modal').modal('show');
+        });
+
+        return false;
+    });
+
+    $('body').on('click', '.js-insert-files', function () {
+        var val = $(this).parent().find('#js-select-file').val();
+        var name = $(this).parent().find('#js-select-file option:selected').text();
+        console.log(name);
+        var text = " [file id=" + val + " " + "name=" + name + "] ";
+        var editorInstance = CKEDITOR.instances['taskcomment-text'];
+        editorInstance.insertHtml( text );
+    });
 });

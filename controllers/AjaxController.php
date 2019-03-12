@@ -239,4 +239,17 @@ class AjaxController extends BaseController
 
         return ['status' => 1];
     }
+
+    /**
+     * @param $taskId
+     *
+     * @return string
+     */
+    public function actionInsertButton($taskId)
+    {
+        $this->layout = 'ajax';
+        \Yii::$app->response->format = Response::FORMAT_HTML;
+        $model = Tasks::findOne($taskId);
+        return $this->render('/tasks/parts/files-list-popup', ['files' => $model->attachments]);
+    }
 }

@@ -25,6 +25,10 @@ use yii\widgets\ActiveForm; ?>
     'preset' => 'basic'
 ])->label('Добавить комментарий');?>
 
-<?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+<?= Html::submitButton('Добавить комментарий', ['class' => 'btn btn-success']) ?>
+<?php if ($model->attachments): ?>
+&nbsp;<a href="/ajax/insert-button?taskId=<?=$model->id?>" class="js-ajax-link">Вставить файл в текст</a>
+<?php endif; ?>
 
 <?php ActiveForm::end() ?>
+<div id="mymodal"></div>

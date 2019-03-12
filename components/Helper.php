@@ -2,6 +2,12 @@
 
 namespace app\components;
 
+use Thunder\Shortcode\HandlerContainer\HandlerContainer;
+use Thunder\Shortcode\Parser\RegularParser;
+use Thunder\Shortcode\Processor\Processor;
+use Thunder\Shortcode\Shortcode\ShortcodeInterface;
+use yii\helpers\ArrayHelper;
+
 /**
  * Class Helper
  *
@@ -228,5 +234,31 @@ class Helper
             '/(\+\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/isu', "$1 ($2) $3-$4-$5",
             $phone
         );
+    }
+
+    /**
+     * @param $text           - Text with shortcodes
+     * @param $processData    [keyword => 'file', 'attributes' => ['id', 'name']
+     * @param $stringTemplate "<a href='/task/download?fileId=%s'>%s</a>"
+     *
+     * @return string
+     */
+    public static function processShortCode($text, $processData, $stringTemplate)
+    {
+        $handlers = new HandlerContainer();
+        $handlers->add($processData['keyword'], function(ShortcodeInterface $s) use ($processData, $stringTemplate)
+        {
+            return call_user_func_array('sprintf',
+                ArrayHelper::merge(
+                    [$stringTemplate],
+                    array_map(function ($item) use ($s) {
+                        return $s->getParameter($item);
+                    }, $processData['attributes'])
+                )
+            );
+        });
+        $processor = new Processor(new RegularParser(), $handlers);
+
+        return $processor->process($text);
     }
 }

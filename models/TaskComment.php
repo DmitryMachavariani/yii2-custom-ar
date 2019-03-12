@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Helper;
 use Yii;
 
 /**
@@ -78,5 +79,17 @@ class TaskComment extends \yii\db\ActiveRecord
     public static function find()
     {
         return new TaskCommentQuery(get_called_class());
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->text = Helper::processShortCode(
+            $this->text,
+            ['keyword' => 'file', 'attributes' => ['id', 'name']],
+            '<a href="/tasks/download?file_id=%s">%s</a>'
+        );
+        return parent::beforeSave(
+            $insert
+        );
     }
 }

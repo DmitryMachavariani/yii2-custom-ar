@@ -42,15 +42,15 @@ abstract class NotifyFactory implements \yii\queue\JobInterface
      */
     public static function notifyUser($userId, $taskId = null, $params = [], $message = null)
     {
-        /** @var NotifyFactory[] $notifies */
-        $notifies = [
-            self::create(Notification::TYPE_INSIDE)
-        ];
         $userId = (is_array($userId) ? $userId : [$userId]);
         foreach ($userId as $id) {
             if (empty($id)) {
                 continue;
             }
+            /** @var NotifyFactory[] $notifies */
+            $notifies = [
+                self::create(Notification::TYPE_INSIDE)
+            ];
             $notifications = Users::findOne($id)->getNotifications();
             $task = $taskId ? Tasks::findOne($taskId) : null;
 

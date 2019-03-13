@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\components\Bot\Curl;
+use app\components\CustomAccessRule;
 use app\models\SendMessageForm;
 use app\models\User;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Response;
 use app\models\LoginForm;
 
@@ -14,6 +16,29 @@ class SiteController extends BaseController
 {
     public $defaultAction = 'login';
     public $enableCsrfValidation = false;
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'ruleConfig' => [
+                    'class' => CustomAccessRule::class
+                ],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['login', 'bot'],
+                        'roles' => ['?']
+                    ],
+                ],
+            ],
+        ];
+    }
 
     public function actionError()
     {
@@ -83,6 +108,11 @@ class SiteController extends BaseController
     {
         $this->enableCsrfValidation = false;
         $input = file_get_contents('php://input');
+        $log = '------------' .
+            PHP_EOL .
+            date('d.m.Y H:i:s') . PHP_EOL .
+            $input . PHP_EOL;
+        file_put_contents(dirname(__FILE__, 2) . '/runtime/test_hook2.log', $log, FILE_APPEND);
 
         $data = json_decode($input, 1);
         Yii::$app->bot->run($data);

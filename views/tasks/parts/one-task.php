@@ -94,7 +94,7 @@ $this->title = "Задача: {$model->title}";
                         <li>
                             <span class="glyphicon glyphicon-file"></span>
                             <a target="_blank" href="<?= $file->getInternalFileUrl() ?>"><?= $file->name ?></a> (<?= date('d.m.Y H:i', strtotime($file->date_updated)) ?>)
-                            <a href="<?= Url::to(['tasks/download', 'file' => $file->id]) ?>"><span class="glyphicon glyphicon-file"></span></a>
+                            <a href="<?= Url::to(['tasks/download', 'file_id' => $file->id]) ?>"><span class="glyphicon glyphicon-file"></span></a>
                             <a href="<?= Url::to(['ajax/remove-file', 'file' => $file->id]) ?>" class="js-remove-document"><span class="glyphicon glyphicon-remove"></span></a>
                         </li>
                     <?php endforeach; ?>

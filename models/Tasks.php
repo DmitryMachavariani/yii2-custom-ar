@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\FileHelper;
+use app\components\notification\NotifyFactory;
 use app\controllers\TasksController;
 use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use Yii;
@@ -442,7 +443,10 @@ class Tasks extends \yii\db\ActiveRecord
             ]);
             if ($comment->save()) {
                 $this->comments[] = [$comment];
-                return $this->save();
+                if ($this->save()) {
+                    NotifyFactory::notifyUser($this->getUsersToNotify(), ['view' => 'new-comment']);
+                }
+                return true;
             }
         } catch (\Exception $e) {
             return true;

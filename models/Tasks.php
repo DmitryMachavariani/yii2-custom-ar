@@ -379,16 +379,11 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getUsersToNotify()
     {
-        return array_unique([
+        return array_diff(array_unique([
             $this->assigned_to,
             $this->created_by,
             $this->notify
-        ]);
-//        return array_diff(array_unique([
-//            $this->assigned_to,
-//            $this->created_by,
-//            $this->notify
-//        ]), ([@Yii::$app->user->id ?? 0]));
+        ]), ([@Yii::$app->user->id ?? 0]));
     }
 
     /**

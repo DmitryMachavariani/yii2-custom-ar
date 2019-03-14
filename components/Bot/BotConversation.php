@@ -278,7 +278,8 @@ class BotConversation extends Conversation
         if (!$task) {
             return $this->say('Задача не найдена');
         }
-        $text = "<b>Задача:</b> {$task->title}" . PHP_EOL . PHP_EOL;
+        $baseUrl = \Yii::$app->params['baseUrl'];
+        $text = "<b>Задача:</b> <a href=\"{$baseUrl}tasks/task?taskId={$task->id}\">{$task->title}</a>" . PHP_EOL . PHP_EOL;
         $text .= \Yii::$app->bot->stripTags($task->description) . PHP_EOL;
         $text .= "<b>Назначена на:</b> {$task->assigned->username}" . PHP_EOL;
         $text .= "<b>Сроки сдачи:</b> {$task->planned_start_date} - {$task->planned_end_date}" . PHP_EOL;
@@ -287,17 +288,18 @@ class BotConversation extends Conversation
 
         if ($task->comments) {
             $text .= PHP_EOL . "<b>Комменты:</b>" . PHP_EOL;
-
+            $text .= '-----------' . PHP_EOL;
             foreach ($task->comments as $comment) {
                 $text .= "{$comment->date_updated} <b>{$comment->author->username}</b> написал(-а):" . PHP_EOL;
                 $text .= '<pre>' . strip_tags($comment->text) . '</pre>' . PHP_EOL;
+                $text .= '-----------' . PHP_EOL;
             }
         }
 
         if ($task->attachments) {
             $text .= PHP_EOL . "<b>Файлы:</b>" . PHP_EOL;
             foreach ($task->attachments as $file) {
-                $text .= '    * <a href="'.\Yii::$app->params['baseUrl'] . '/tasks/view-file?file_id='.$file->id.'">'.$file->name.'</a>' . PHP_EOL;
+                $text .= '    * <a href="'.$baseUrl . 'tasks/view-file?file_id='.$file->id.'">'.$file->name.'</a>' . PHP_EOL;
             }
         }
         $messages = Helper::splitMessage($text, \Yii::$app->bot->maxMessageSymbols);

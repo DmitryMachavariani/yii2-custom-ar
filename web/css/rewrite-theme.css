@@ -57,3 +57,8 @@ ul.documents-list li {
 .comments.timeline::before {
     background: none;
 }
+
+.comments .timeline-body {
+    padding: 10px;
+    color: #1a2226;
+}

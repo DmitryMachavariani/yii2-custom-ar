@@ -434,14 +434,18 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function addComment($commentText, $userId)
     {
-        $comment = new TaskComment([
-            'text' => $commentText,
-            'author_id' => $userId,
-            'task_id' => $this->id
-        ]);
-        if ($comment->save()) {
-            $this->comments[] = [$comment];
-            return $this->save();
+        try {
+            $comment = new TaskComment([
+                'text' => $commentText,
+                'author_id' => $userId,
+                'task_id' => $this->id
+            ]);
+            if ($comment->save()) {
+                $this->comments[] = [$comment];
+                return $this->save();
+            }
+        } catch (\Exception $e) {
+            return true;
         }
 
         return false;

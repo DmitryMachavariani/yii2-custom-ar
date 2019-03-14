@@ -301,11 +301,63 @@ class BotConversation extends Conversation
             }
         }
         $messages = Helper::splitMessage($text, \Yii::$app->bot->maxMessageSymbols);
-        foreach ($messages as $message) {
-            $this->say($message, ['parse_mode'=>'HTML']);
+        if (count($messages) > 1) {
+            for ($i = 0; $i < count($messages) - 1; $i++) {
+                $this->say($messages[$i], ['parse_mode'=>'HTML']);
+            }
+            $messageText = $messages[count($messages) - 1];
+        } else {
+            $messageText = $messages[0] ?? 'Не найдено';
         }
+        $question = Question::create($messageText)->addButtons([
+            Button::create('Добавить коммент')->value('add_comment')
+        ]);
 
-        return true;
+        return $this->ask(
+            $question,
+            function (Answer $answer) {
+                $this->beforeAction();
+                $value = $answer->getText();
+                if ($answer->isInteractiveMessageReply()) {
+                    switch ($value) {
+                        case 'add_comment':
+                            return $this->addComment();
+                            break;
+                        default:
+                            break;
+                        }
+                }
+
+                return true;
+            },
+            ['parse_mode'=>'HTML']
+        );
+    }
+
+    /**
+     * @return BotConversation
+     */
+    public function addComment()
+    {
+        /** @var Tasks $task */
+        $task = Tasks::findOne($this->inputParams['taskId'] ?? 0);
+        if (!$task) {
+            return $this->say('Задача не найдена');
+        }
+        $question = Question::create("Введите комментарий")->addButtons([
+            Button::create('Назад')->value('back'),
+        ]);
+
+        return $this->ask($question, function (Answer $answer) use ($task) {
+            $this->beforeAction();
+            if (!$answer->isInteractiveMessageReply()) {
+                $commentText = $answer->getText();
+                $message = $task->addComment($commentText, $this->systemUser->id) ? 'Добавлено' : 'Неудача';
+                $this->say($message);
+            }
+
+            return $this->getTask();
+        });
     }
 
     /**
@@ -320,7 +372,6 @@ class BotConversation extends Conversation
         }
 
         $attachment = new File(
-//            $file->getFileUrl(),
             \Yii::$app->params['baseUrl'] . 'uploads/test.pdf?v=' . rand(8324, 324543653),
             ['custom_payload' => true,]
         );

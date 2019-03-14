@@ -3,6 +3,8 @@
 namespace app\models;
 
 use app\components\FileHelper;
+use app\controllers\TasksController;
+use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -76,6 +78,18 @@ class Tasks extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'tasks';
+    }
+
+    public function behaviors()
+    {
+        return [
+            'saveRelations' => [
+                'class'     => SaveRelationsBehavior::class,
+                'relations' => [
+                    'comments',
+                ],
+            ],
+        ];
     }
 
     public function rules()
@@ -316,7 +330,7 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         if (!empty($changedAttributes)) {
-            History::create(History::TYPE_CHANGE_ATTRIBUTES, History::MODEL_TASKS, $this->id, implode("\n", $changedAttributes));
+            History::create(History::TYPE_CHANGE_ATTRIBUTES, History::MODEL_TASKS, $this->id, implode(PHP_EOL, $changedAttributes));
         }
 
         $this->date_updated = date('Y-m-d H:i:s');
@@ -379,11 +393,16 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getUsersToNotify()
     {
-        return array_diff(array_unique([
+        return array_unique([
             $this->assigned_to,
             $this->created_by,
             $this->notify
-        ]), ([@Yii::$app->user->id ?? 0]));
+        ]);
+//        return array_diff(array_unique([
+//            $this->assigned_to,
+//            $this->created_by,
+//            $this->notify
+//        ]), ([@Yii::$app->user->id ?? 0]));
     }
 
     /**
@@ -410,5 +429,26 @@ class Tasks extends \yii\db\ActiveRecord
     public function getPriorityDescription()
     {
         return (isset(self::PRIORITIES[$this->priority]) ? self::PRIORITIES[$this->priority] : 'Неизвестно');
+    }
+
+    /**
+     * @param $commentText
+     * @param $userId
+     *
+     * @return bool
+     */
+    public function addComment($commentText, $userId)
+    {
+        $comment = new TaskComment([
+            'text' => $commentText,
+            'author_id' => $userId,
+            'task_id' => $this->id
+        ]);
+        if ($comment->save()) {
+            $this->comments[] = [$comment];
+            return $this->save();
+        }
+
+        return false;
     }
 }

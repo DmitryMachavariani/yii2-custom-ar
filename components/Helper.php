@@ -165,15 +165,24 @@ class Helper
         $result = [];
 
         $message = '';
-        foreach ($parts as $part) {
-            if (mb_strlen($message . $part) >= $maxSize) {
-                $result[] = ($message . PHP_EOL);
-                $message = $part . PHP_EOL;
+        foreach ($parts as $i => $part) {
+            if (mb_strlen($message . $part) < $maxSize) {
+                $message .= $part . PHP_EOL;
             } else {
-                $message .= ($part . PHP_EOL);
+                $bigPart = $message . $part;
+                $partLen = mb_strlen($bigPart);
+                $countParts = ceil($partLen / $maxSize);
+                for ($i = 0; $i < $countParts - 1; $i++) {
+                    $result[] = mb_substr($bigPart, $i * $maxSize, $maxSize);
+                }
+                if (mb_strlen(mb_substr($bigPart, ($countParts - 1) * $maxSize, $maxSize)) < $maxSize) {
+                    $message = mb_substr($bigPart, ($countParts - 1) * $maxSize, $maxSize) . PHP_EOL;
+                } else {
+                    $message = '';
+                }
             }
         }
-        $result[] = $message;
+        $result[] = $message . PHP_EOL;
 
         return $result;
     }

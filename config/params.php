@@ -11,6 +11,6 @@ $data = [
 if (file_exists(dirname(__FILE__) . '/local.params.php')) {
     $data = \yii\helpers\ArrayHelper::merge($data, require (dirname(__FILE__) . '/local.params.php'));
 }
-defined('USE_FILE_EMAIL_TRANSPORT') || define('USE_FILE_EMAIL_TRANSPORT', false);
+defined('USE_FILE_EMAIL_TRANSPORT') or define('USE_FILE_EMAIL_TRANSPORT', false);
 
 return $data;

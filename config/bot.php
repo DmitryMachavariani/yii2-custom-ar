@@ -8,7 +8,8 @@ $data = [
     'verifySsl' => false,
     'proxyUrl' => '146.185.252.123:7358',
     'proxyAuth' => 'user16120:nwbhpy',
-    'viewPath' => '@app/views/notifications/telegram'
+    'viewPath' => '@app/views/notifications/telegram',
+    'maxMessageSymbols' => 4000,
 ];
 
 if (file_exists(dirname(__FILE__) . '/local.bot.php')) {

@@ -51,6 +51,11 @@ class Bot extends Component
     public $cacheTime;
 
     /**
+     * @var array
+     */
+    public $allowedTags = ['b', 'i', 'a', 'code', 'pre'];
+
+    /**
      * @var BotMan
      */
     protected $bot;
@@ -96,6 +101,11 @@ class Bot extends Component
     public $viewPath;
 
     /**
+     * @var int
+     */
+    public $maxMessageSymbols;
+
+    /**
      * @return BotMan
      */
     public function init()
@@ -131,6 +141,12 @@ class Bot extends Component
                 /** @var $bot \BotMan\BotMan\BotMan */
                 $bot->startConversation(new BotConversation($this->usePassword));
             });
+            $this->bot->hears('/t([0-9]+)', function($bot, $taskId) {
+                $bot->startConversation(new BotConversation($this->usePassword, 'getTask', ['taskId' => $taskId]));
+            });
+            $this->bot->hears('/f([0-9]+)', function($bot, $fileId) {
+                $bot->startConversation(new BotConversation($this->usePassword, 'getFile', ['fileId' => $fileId]));
+            });
 
             $this->bot->listen();
         } catch (\Exception $e) {
@@ -157,8 +173,22 @@ class Bot extends Component
         $message = $view->renderFile($this->viewPath . '/' . ($params['view'] ? "{$params['view']}.php" : ''), $params);
 
         return $this->bot->say($message, $chatId, null, [
-            'mode' => 'HTML'
+            'parse_mode' => 'HTML'
         ]);
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    public function stripTags($text)
+    {
+        $text = preg_replace('/<br>/', PHP_EOL, $text);
+        $text = preg_replace('/<strong>/isu', '<b>', $text);
+        $text = preg_replace('/<\/strong>/isu', '</b>', $text);
+
+        return strip_tags($text, '<' . implode('><', $this->allowedTags) . '>');
     }
 
     /**

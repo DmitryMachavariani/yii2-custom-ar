@@ -2,7 +2,9 @@
 
 namespace app\components\Bot;
 
+use app\models\Files;
 use app\models\Settings;
+use app\models\Tasks;
 use app\models\Users;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
@@ -79,13 +81,27 @@ class BotConversation extends Conversation
     private $usePassword;
 
     /**
+     * @var string
+     */
+    private $startAction = 'intro';
+
+    /**
+     * @var array
+     */
+    protected $inputParams = [];
+
+    /**
      * BotConversation constructor.
      *
-     * @param bool $usePassword
+     * @param bool   $usePassword
+     * @param string $action
+     * @param array  $params
      */
-    public function __construct($usePassword = true)
+    public function __construct($usePassword = true, $action = 'intro', $params = [])
     {
         $this->usePassword = $usePassword;
+        $this->startAction = $action;
+        $this->inputParams = $params;
     }
 
     /**
@@ -221,7 +237,7 @@ class BotConversation extends Conversation
 
     public function thanksPage()
     {
-        $this->say('Принял. Ждите уведомлений');
+        return $this->say('Принял. Ждите уведомлений');
     }
 
     /**
@@ -234,7 +250,7 @@ class BotConversation extends Conversation
                 $this->chatId = $this->bot->getUser()->getId();
                 $this->systemUser = Users::getByChatId($this->chatId);
             }
-            return $this->intro();
+            return $this->{$this->startAction}();
         } catch (\Exception $e) {
             return $this->onError('Возникла ошибка', $e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }
@@ -250,5 +266,67 @@ class BotConversation extends Conversation
         $this->data['payloadData'] = $this->bot->reply($message, $additionalParameters);
 
         return $this;
+    }
+
+    /**
+     * @return BotConversation|bool
+     */
+    protected function getTask()
+    {
+        /** @var Tasks $task */
+        $task = Tasks::findOne($this->inputParams['taskId'] ?? 0);
+        if (!$task) {
+            return $this->say('Задача не найдена');
+        }
+        $text = "<b>Задача:</b> {$task->title}" . PHP_EOL . PHP_EOL;
+        $text .= \Yii::$app->bot->stripTags($task->description) . PHP_EOL;
+        $text .= "<b>Назначена на:</b> {$task->assigned->username}" . PHP_EOL;
+        $text .= "<b>Сроки сдачи:</b> {$task->planned_start_date} - {$task->planned_end_date}" . PHP_EOL;
+        $text .= "<b>Статус:</b> {$task->getStatusDescription()}" . PHP_EOL;
+        $text .= "<b>Приоритет:</b> {$task->getPriorityDescription()}" . PHP_EOL;
+
+        if ($task->comments) {
+            $text .= PHP_EOL . "<b>Комменты:</b>" . PHP_EOL;
+
+            foreach ($task->comments as $comment) {
+                $text .= "{$comment->date_updated} <b>{$comment->author->username}</b> написал(-а):" . PHP_EOL;
+                $text .= '<pre>' . strip_tags($comment->text) . '</pre>' . PHP_EOL;
+            }
+        }
+
+        if ($task->attachments) {
+            $text .= PHP_EOL . "<b>Файлы:</b>" . PHP_EOL;
+            foreach ($task->attachments as $file) {
+                $text .= '    * <a href="'.\Yii::$app->params['baseUrl'] . '/tasks/view-file?file_id='.$file->id.'">'.$file->name.'</a>' . PHP_EOL;
+            }
+        }
+        $messages = Helper::splitMessage($text, \Yii::$app->bot->maxMessageSymbols);
+        foreach ($messages as $message) {
+            $this->say($message, ['parse_mode'=>'HTML']);
+        }
+
+        return true;
+    }
+
+    /**
+     * @deprecated
+     * @return BotConversation
+     */
+    protected function getFile()
+    {
+        $file = Files::findOne($this->inputParams['fileId'] ?? 0);
+        if (!$file) {
+            return $this->say('Файл не найден');
+        }
+
+        $attachment = new File(
+//            $file->getFileUrl(),
+            \Yii::$app->params['baseUrl'] . 'uploads/test.pdf?v=' . rand(8324, 324543653),
+            ['custom_payload' => true,]
+        );
+        $message = OutgoingMessage::create('')
+            ->withAttachment($attachment);
+
+        return $this->say($message);
     }
 }

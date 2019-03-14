@@ -379,11 +379,16 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getUsersToNotify()
     {
-        return array_diff(array_unique([
+        return array_unique([
             $this->assigned_to,
             $this->created_by,
             $this->notify
-        ]), ([@Yii::$app->user->id ?? 0]));
+        ]);
+//        return array_diff(array_unique([
+//            $this->assigned_to,
+//            $this->created_by,
+//            $this->notify
+//        ]), ([@Yii::$app->user->id ?? 0]));
     }
 
     /**
@@ -394,5 +399,21 @@ class Tasks extends \yii\db\ActiveRecord
         return $this->hasOne(History::class, ['model_id' => 'id'])
             ->andOnCondition(['model_name' => 'Tasks'])
             ->orderBy([History::tableName() . '.date' => SORT_DESC]);
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getStatusDescription()
+    {
+        return (isset(self::STATUSES[$this->status]) ? self::STATUSES[$this->status] : 'Неизвестно');
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getPriorityDescription()
+    {
+        return (isset(self::PRIORITIES[$this->priority]) ? self::PRIORITIES[$this->priority] : 'Неизвестно');
     }
 }

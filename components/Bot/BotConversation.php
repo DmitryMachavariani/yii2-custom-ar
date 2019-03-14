@@ -279,7 +279,8 @@ class BotConversation extends Conversation
             return $this->say('Задача не найдена');
         }
         $baseUrl = \Yii::$app->params['baseUrl'];
-        $text = "<b>Задача:</b> <a href=\"{$baseUrl}tasks/task?taskId={$task->id}\">{$task->title}</a>" . PHP_EOL . PHP_EOL;
+        $text = "<b>Проект:</b> <a href=\"{$baseUrl}tasks/tasks?projectId={$task->project_id}\">{$task->project->title}</a>" . PHP_EOL;
+        $text .= "<b>Задача:</b> <a href=\"{$baseUrl}tasks/task?taskId={$task->id}\">{$task->title}</a>" . PHP_EOL . PHP_EOL;
         $text .= \Yii::$app->bot->stripTags($task->description) . PHP_EOL;
         $text .= "<b>Назначена на:</b> {$task->assigned->username}" . PHP_EOL;
         $text .= "<b>Сроки сдачи:</b> {$task->planned_start_date} - {$task->planned_end_date}" . PHP_EOL;

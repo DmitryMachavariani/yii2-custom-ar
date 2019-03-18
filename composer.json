@@ -30,7 +30,8 @@
         "kartik-v/yii2-widget-datepicker": "^1.4",
         "la-haute-societe/yii2-save-relations-behavior": "^1.7",
         "arhitector/yandex": "dev-master",
-        "thunderer/shortcode": "^0.7.1"
+        "thunderer/shortcode": "^0.7.1",
+        "vladayson/yii2-custom-ar": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

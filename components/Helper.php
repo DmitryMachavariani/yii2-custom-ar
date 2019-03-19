@@ -270,4 +270,9 @@ class Helper
 
         return $processor->process($text);
     }
+
+    public static function processHistoryOfTask(int $type)
+    {
+
+    }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3afd5353ccd11ff6d9d661c2127f5d6a",
+    "content-hash": "d118305b2a97e2a945e3097e69998d3e",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -2860,6 +2860,55 @@
                 "laravel"
             ],
             "time": "2019-03-05T14:34:11+00:00"
+        },
+        {
+            "name": "vladayson/yii2-custom-ar",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vladayson/yii2-custom-ar.git",
+                "reference": "890fb8155442585fc4f11a368de820c3294150ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vladayson/yii2-custom-ar/zipball/890fb8155442585fc4f11a368de820c3294150ec",
+                "reference": "890fb8155442585fc4f11a368de820c3294150ec",
+                "shasum": ""
+            },
+            "require": {
+                "la-haute-societe/yii2-save-relations-behavior": "^1.7",
+                "php": ">=7.1",
+                "yiisoft/yii2": "~2.0.16"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "vladayson\\AccessRules\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Vladayson GNS Team",
+                    "email": "vivanenko@dev-gns.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Custom Access Rules for Yii2",
+            "keywords": [
+                "access rules",
+                "extension",
+                "yii",
+                "yii 2",
+                "yii2"
+            ],
+            "time": "2019-03-06T11:02:41+00:00"
         },
         {
             "name": "yiisoft/yii2",

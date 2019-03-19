@@ -13,20 +13,6 @@ use yii\web\UploadedFile;
 
 class UserController extends BaseController
 {
-    public function behaviors()
-    {
-        $rule = [
-            'actions' => ['index', 'create', 'update'],
-            'allow' => true,
-            'roles' => [Users::STATUS_ADMIN]
-        ];
-
-        $parent = parent::behaviors();
-        array_unshift($parent['access']['rules'], $rule);
-
-        return $parent;
-    }
-
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([

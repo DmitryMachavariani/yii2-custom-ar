@@ -8,28 +8,28 @@ use yii\web\Controller;
 
 class BaseController extends Controller
 {
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'ruleConfig' => [
-                    'class' => CustomAccessRule::class
-                ],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['login'],
-                        'roles' => ['?']
-                    ],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'access' => [
+//                'class' => AccessControl::class,
+//                'ruleConfig' => [
+//                    'class' => CustomAccessRule::class
+//                ],
+//                'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['login'],
+//                        'roles' => ['?']
+//                    ],
+//                ],
+//            ],
+//        ];
+//    }
 
     public function init()
     {

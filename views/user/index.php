@@ -24,7 +24,7 @@ $this->title = 'Управление пользователем';
                 [
                     'attribute' => 'status',
                     'value' => function (Users $user) {
-                        return Users::getStatus($user->status);
+                        return Users::getStatus($user->roleUser->role->name);
                     }
                 ],
                 'profile.fullName',

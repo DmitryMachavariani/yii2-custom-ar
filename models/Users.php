@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\Helper;
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "users".
@@ -19,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property Profile $profile
  * @property Settings[] $settings
  * @property Projects[] $projects
+ * @property RolesUsers $roleUser
  */
 class Users extends User
 {
@@ -30,20 +32,14 @@ class Users extends User
     public $status;
 
     /** STATUSES */
-    const STATUS_USER = 1;
-    const STATUS_ADMIN = 2;
-    const STATUS_BANNED = 3;
+    const STATUS_USER = 'user';
+    const STATUS_ADMIN = 'admin';
+    const STATUS_BANNED = 'banned';
 
     const STATUSES = [
         self::STATUS_USER => 'Пользователь',
         self::STATUS_ADMIN => 'Администратор',
         self::STATUS_BANNED => 'Заблокированный'
-    ];
-
-    const STATUSES_NAME = [
-        self::STATUS_USER => 'user',
-        self::STATUS_ADMIN => 'admin',
-        self::STATUS_BANNED => 'banned'
     ];
 
     const SCENARIO_UPDATE = 'update_users';
@@ -53,9 +49,9 @@ class Users extends User
     {
         return [
             [['password', 'formPassword', 'repeatPassword'], 'safe', 'on' => self::SCENARIO_UPDATE],
-            [['username', 'password', 'email', 'status'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['username', 'email', 'status'], 'required', 'on' => self::SCENARIO_UPDATE],
 
-            [['username', 'password', 'email', 'status'], 'required'],
+            [['username', 'email', 'status'], 'required'],
             ['formPassword', 'compare', 'compareAttribute' => 'repeatPassword'],
 
             ['email', 'email'],
@@ -63,7 +59,7 @@ class Users extends User
             [['password'], 'string', 'max' => 65],
             [['email'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 255],
-            [['status'], 'safe'],
+            [['status', 'repeatPassword', 'formPassword'], 'safe'],
 
 //            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -113,11 +109,41 @@ class Users extends User
 
         }
 
-        if ($this->scenario == self::SCENARIO_UPDATE && !empty($this->formPassword)) {
+        if (!empty($this->formPassword)) {
             $this->password = Yii::$app->security->generatePasswordHash($this->formPassword);
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * @param bool  $insert
+     * @param array $changedAttributes
+     *
+     * @throws NotFoundHttpException
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $roleUser = RolesUsers::find()->where(['user_id' => $this->id])->one();
+        $role = Roles::find()->where(['name' => $this->status])->one();
+
+        if (!$role)
+        {
+            throw new NotFoundHttpException("Роль не найдена");
+        }
+
+        if ($roleUser)
+        {
+            $roleUser->role_id = $role->id;
+        } else {
+            $roleUser = new RolesUsers();
+            $roleUser->user_id = $this->id;
+            $roleUser->role_id = $role->id;
+        }
+
+        $roleUser->save(false);
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     public function afterFind()
@@ -222,11 +248,11 @@ class Users extends User
     }
 
     /**
-     * @param int $status
+     * @param string $status
      *
      * @return string
      */
-    public static function getStatus (int $status): string
+    public static function getStatus (string $status): string
     {
         return self::STATUSES[$status] ?? '';
     }
@@ -258,6 +284,10 @@ class Users extends User
             ])->one();
     }
 
+    /**
+     * @return string
+     * @throws \yii\base\Exception
+     */
     public function generatePassword()
     {
         $password = Yii::$app->security->generateRandomString(rand(8, 12));
@@ -280,5 +310,10 @@ class Users extends User
     public function getProjects()
     {
         return $this->hasMany(Projects::class, ['id' => 'project_id'])->via('projectUser');
+    }
+
+    public function getRoleUser()
+    {
+        return $this->hasOne(RolesUsers::class, ['user_id' => 'id']);
     }
 }

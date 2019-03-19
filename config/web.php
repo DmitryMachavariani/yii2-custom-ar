@@ -34,6 +34,7 @@ $config = [
             ]
         ],
         'user' => [
+            'class' => \vladayson\AccessRules\WebUser::class,
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],

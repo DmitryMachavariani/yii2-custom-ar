@@ -237,7 +237,7 @@ class AjaxController extends BaseController
             ]
         );
 
-        return ['status' => 1];
+        return ['type' => 'success', 'msg' => 'Комментарий оставлен'];
     }
 
     /**

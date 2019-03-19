@@ -27,6 +27,8 @@ class Users extends User
     public $formPassword;
     public $repeatPassword;
 
+    public $status;
+
     /** STATUSES */
     const STATUS_USER = 1;
     const STATUS_ADMIN = 2;
@@ -36,6 +38,12 @@ class Users extends User
         self::STATUS_USER => 'Пользователь',
         self::STATUS_ADMIN => 'Администратор',
         self::STATUS_BANNED => 'Заблокированный'
+    ];
+
+    const STATUSES_NAME = [
+        self::STATUS_USER => 'user',
+        self::STATUS_ADMIN => 'admin',
+        self::STATUS_BANNED => 'banned'
     ];
 
     const SCENARIO_UPDATE = 'update_users';
@@ -51,11 +59,11 @@ class Users extends User
             ['formPassword', 'compare', 'compareAttribute' => 'repeatPassword'],
 
             ['email', 'email'],
-            [['status'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 65],
             [['email'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 255],
+            [['status'], 'safe'],
 
 //            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];

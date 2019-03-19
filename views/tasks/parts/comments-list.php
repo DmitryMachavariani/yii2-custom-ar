@@ -4,8 +4,9 @@
  */
 ?>
 
-<h3>Комментарии к задаче <?=$model->title?></h3>
 <div class="row">
+    <h3>Комментарии к задаче <?= $model->title ?></h3>
+
     <div class="timeline comments">
         <?php foreach ($model->comments as $comment): ?>
                 <div class="time-label bg-gray">

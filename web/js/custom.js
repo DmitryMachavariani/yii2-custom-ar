@@ -260,12 +260,8 @@ $(document).ready(function () {
                 task_id: self.find('#taskcomment-task_id').val()
             }
         };
-        $.post(self.attr('action'), data, function (data) {
-            if (data.status != 1) {
-                alert(data.message);
-            } else {
-                alert('Комментарий добавлен')
-            }
+        $.post(self.attr('action'), data, function (result) {
+            showAlert(result.msg, result.type);
             return false;
         });
 

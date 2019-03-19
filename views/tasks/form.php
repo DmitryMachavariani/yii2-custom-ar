@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use dosamigos\ckeditor\CKEditor;
 use kartik\date\DatePicker;
 use \yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * @var $model \app\models\Tasks
@@ -36,9 +37,8 @@ $classes = [
     $options = [
         'class' => ArrayHelper::merge($classes, ['hidden-toggle'])
     ];
+}
 ?>
-
-<?php } ?>
 <?= $form->field($model, 'description', [
         'options' => $options,
         'labelOptions' => [ 'class' => 'toggle-label']
@@ -97,7 +97,7 @@ $classes = [
 
 <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 <?php if (!$model->isNewRecord): ?>
-    <a class="btn btn-primary" href="/tasks/task?taskId=<?=$model->id?>">Посмотреть задачу</a>
+    <a class="btn btn-primary" href="<?= Url::to(['tasks/tasks', 'taskId' => $model->id]) ?>">Посмотреть задачу</a>
 <?php endif; ?>
 
 <?php ActiveForm::end() ?>

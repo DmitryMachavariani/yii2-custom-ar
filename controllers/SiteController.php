@@ -4,11 +4,10 @@ namespace app\controllers;
 
 use app\components\BaseController;
 use app\components\Bot\Curl;
-use app\components\CustomAccessRule;
 use app\models\SendMessageForm;
 use app\models\User;
+use app\models\Users;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Response;
 use app\models\LoginForm;
 
@@ -19,25 +18,57 @@ class SiteController extends BaseController
 
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'ruleConfig' => [
-                    'class' => CustomAccessRule::class
-                ],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['login', 'bot'],
-                        'roles' => ['?']
-                    ],
-                ],
+        $parent = parent::behaviors();
+        $rules = [
+            [
+                'roles' => [Users::STATUS_USER],
+                'actions' => ['short'],
+                'allow' => true
+            ],
+            [
+                'roles' => [Users::STATUS_ADMIN],
+                'actions' => ['test'],
+                'allow' => false
             ],
         ];
+
+        $result = array_merge($parent['access']['rules'], $rules);
+        $parent['access']['rules'] = $result;
+
+        return $parent;
+    }
+
+    public function actionLong()
+    {
+        $t = time();
+
+        if (Yii::$app->user->can('canLong')) {
+            echo 'Privet <br>';
+        }
+
+        echo $t;
+    }
+
+    public function actionShort()
+    {
+        $t = 'Short';
+
+        if (Yii::$app->user->can('canDo')) {
+            echo 'CAN DO!!!!!!1 <br>';
+        }
+
+        echo $t;
+    }
+
+    public function actionTest()
+    {
+        $t = 'Test';
+
+        if (Yii::$app->user->can('canDo')) {
+            echo 'CAN DO!!!!!!1 <br>';
+        }
+
+        echo $t;
     }
 
     public function actionError()
@@ -130,10 +161,4 @@ class SiteController extends BaseController
 
         return $this->render('send-message', compact('model', 'users'));
     }
-
-    public function actionTest()
-    {
-        //
-    }
-
 }

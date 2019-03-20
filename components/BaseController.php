@@ -3,33 +3,26 @@
 namespace app\components;
 
 use app\models\notifications\Notification;
-use yii\filters\AccessControl;
+use vladayson\AccessRules\AccessControl;
 use yii\web\Controller;
+use app\models\Users;
 
 class BaseController extends Controller
 {
-//    public function behaviors()
-//    {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::class,
-//                'ruleConfig' => [
-//                    'class' => CustomAccessRule::class
-//                ],
-//                'rules' => [
-//                    [
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//                    ],
-//                    [
-//                        'allow' => true,
-//                        'actions' => ['login'],
-//                        'roles' => ['?']
-//                    ],
-//                ],
-//            ],
-//        ];
-//    }
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'roles' => [Users::STATUS_ADMIN],
+                        'allow' => true
+                    ],
+                ],
+            ]
+        ];
+    }
 
     public function init()
     {

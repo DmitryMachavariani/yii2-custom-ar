@@ -326,7 +326,29 @@ class Tasks extends \yii\db\ActiveRecord
             }
 
             if ($this->oldAttributes[$key] != $this->attributes[$key]) {
-                $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на ' . $this->attributes[$key];
+                switch ($key) {
+                    case 'status':
+                        $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на "' . Tasks::STATUSES[$this->attributes[$key]] . '"';
+                        break;
+
+                    case 'priority':
+                        $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на "' . Tasks::PRIORITIES[$this->attributes[$key]] . '"';
+                        break;
+
+                    case 'assigned_to':
+                        $user = Users::findOne($this->attributes[$key]);
+
+                        if (!$user) {
+                            break;
+                        }
+
+                        $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на "' . $user->profile->fullName . '"';
+                        break;
+
+                    default:
+                        $changedAttributes[] = 'Изменён параметр "' . $this->getAttributeLabel($key) . '" на "' . $this->attributes[$key] . '"';
+                        break;
+                }
             }
         }
 

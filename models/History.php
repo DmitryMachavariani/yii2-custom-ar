@@ -126,6 +126,10 @@ class History extends \yii\db\ActiveRecord
                 $class = 'fa-user-circle-o';
                 break;
 
+            case self::TYPE_CHANGE_ATTRIBUTES:
+                $class = 'fa-id-card-o';
+                break;
+
             default:
                 $class = '';
                 break;

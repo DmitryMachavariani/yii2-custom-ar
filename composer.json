@@ -1,79 +1,33 @@
 {
-    "name": "yiisoft/yii2-app-basic",
-    "description": "Yii 2 Basic Project Template",
-    "keywords": ["yii2", "framework", "basic", "project template"],
-    "homepage": "http://www.yiiframework.com/",
-    "type": "project",
+    "name": "vladayson/yii2-custom-ar",
+    "description": "Custom Access Rules for Yii2",
+    "type": "yii2-extension",
+    "keywords": [
+        "access rules",
+        "yii",
+        "yii2",
+        "yii 2",
+        "extension"
+    ],
     "license": "BSD-3-Clause",
-    "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
-    },
-    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Vladayson GNS Team",
+            "email": "vivanenko@dev-gns.com",
+            "role": "Developer"
+        }
+    ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "yiisoft/yii2": "~2.0.16",
-        "yiisoft/yii2-bootstrap": "~2.0.0",
-        "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "dmstr/yii2-adminlte-asset": "^2.1",
-        "2amigos/yii2-ckeditor-widget": "^2.1",
-        "symfony/dependency-injection": "^4.2",
-        "sadovojav/yii2-image-thumbnail": "^1.0",
-        "yiisoft/yii2-redis": "^2.0",
-        "yiisoft/yii2-queue": "^2.1",
-        "botman/botman": "^2.4",
-        "botman/driver-telegram": "^1.5",
-        "doctrine/cache": "^1.8",
-        "kartik-v/yii2-widget-datepicker": "^1.4",
-        "la-haute-societe/yii2-save-relations-behavior": "^1.7",
-        "arhitector/yandex": "dev-master",
-        "thunderer/shortcode": "^0.7.1",
-        "vladayson/yii2-custom-ar": "^1.0"
+        "la-haute-societe/yii2-save-relations-behavior": "^1.7"
     },
     "require-dev": {
-        "yiisoft/yii2-debug": "~2.0.0",
-        "yiisoft/yii2-gii": "~2.0.0"
+        "phpunit/phpunit": "4.*"
     },
-    "config": {
-        "process-timeout": 1800,
-        "fxp-asset": {
-            "enabled": false
+    "autoload": {
+        "psr-4": {
+            "vladayson\\AccessRules\\": "src"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "yii\\composer\\Installer::postInstall"
-        ],
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::postCreateProject",
-            "yii\\composer\\Installer::postInstall"
-        ]
-    },
-    "extra": {
-        "yii\\composer\\Installer::postCreateProject": {
-            "setPermission": [
-                {
-                    "runtime": "0777",
-                    "web/assets": "0777",
-                    "yii": "0755",
-                    "web/uploads": "0777",
-                    "web/thumbs": "0777"
-                }
-            ]
-        },
-        "yii\\composer\\Installer::postInstall": {
-            "generateCookieValidationKey": [
-                "config/web.php"
-            ]
-        }
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ]
+    }
 }
